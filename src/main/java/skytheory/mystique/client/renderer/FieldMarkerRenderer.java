@@ -4,7 +4,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
@@ -38,7 +37,7 @@ public class FieldMarkerRenderer extends EntityRenderer<FieldMarker> {
 		pPoseStack.pushPose();
 		pPoseStack.mulPose(rotation.getQuaternion());
 		pPoseStack.translate(0.0f, -1.0f, 0.0f);
-		this.model.renderToBuffer(pPoseStack, pBuffer.getBuffer(RenderType.entityCutout(TEXTURE)), pPackedLight, OverlayTexture.NO_OVERLAY, 1.0f, 1.0f, 1.0f, 1.0f);
+		this.model.renderToBuffer(pPoseStack, pBuffer.getBuffer(this.model.renderType(getTextureLocation(pEntity))), pPackedLight, OverlayTexture.NO_OVERLAY, 1.0f, 1.0f, 1.0f, 1.0f);
 		pPoseStack.popPose();
 		pPoseStack.popPose();
 	}
