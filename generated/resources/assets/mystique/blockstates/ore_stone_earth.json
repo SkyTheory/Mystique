@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "mystique:block/ore_stone_earth"
+    }
+  }
+}

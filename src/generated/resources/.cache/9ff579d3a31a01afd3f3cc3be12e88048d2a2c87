@@ -1,0 +1,6 @@
+// 1.19.3	2023-02-19T07:05:51.2877938	Tags for minecraft:block mod id mystique
+647d19dab528477cb376302d48b047e0775c2a12 data/forge/tags/blocks/ores_in_ground/deepslate.json
+f1cc32f716986fcc12f4a5f61e1e03482130e284 data/forge/tags/blocks/ores_in_ground/stone.json
+261b7bec566265e1d671ce57edfa5b0c9bb59a9b data/minecraft/tags/blocks/mineable/pickaxe.json
+261b7bec566265e1d671ce57edfa5b0c9bb59a9b data/minecraft/tags/blocks/needs_iron_tool.json
+5866f53e77154e446a2b8929e422603486d7ff8d data/mystique/tags/blocks/prohibit_chain_destruction.json

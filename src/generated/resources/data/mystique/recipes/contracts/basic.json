@@ -1,0 +1,7 @@
+{
+  "type": "mystique:contract",
+  "contract": "mystique:empty",
+  "item": {
+    "item": "mystique:contract_document"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "mystique:block/device_writing_table",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "mystique:block/device_writing_table"
+    },
+    "facing=south": {
+      "model": "mystique:block/device_writing_table",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "mystique:block/device_writing_table",
+      "y": 270
+    }
+  }
+}
