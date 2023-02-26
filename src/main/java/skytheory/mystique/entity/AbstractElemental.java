@@ -63,7 +63,10 @@ public class AbstractElemental extends PathfinderMob implements DataSync, ItemHa
 	}
 
 	protected Brain<?> makeBrain(Dynamic<?> pDynamic) {
-		Brain<AbstractElemental> brain = ElementalAI.makeBrain(this.brainProvider().makeBrain(pDynamic));
+		Brain<AbstractElemental> brain = (this.brainProvider().makeBrain(pDynamic));
+		if (!this.level.isClientSide) {
+			ElementalAI.initBrain(brain);
+		}
 		return brain;
 	}
 

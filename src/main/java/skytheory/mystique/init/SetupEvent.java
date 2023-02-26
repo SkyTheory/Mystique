@@ -1,13 +1,11 @@
 package skytheory.mystique.init;
 
 import java.util.concurrent.CompletableFuture;
-import java.util.function.Supplier;
 
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.sensing.SensorType;
 import net.minecraft.world.entity.schedule.Activity;
 import net.minecraft.world.entity.schedule.Schedule;
@@ -22,8 +20,6 @@ import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.event.CreativeModeTabEvent;
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.InterModComms;
-import net.minecraftforge.fml.InterModComms.IMCMessage;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLConstructModEvent;
@@ -62,6 +58,9 @@ public class SetupEvent {
 		RegistryBuilder<MystiqueContract> builder = new RegistryBuilder<>();
 		builder.setName(MystiqueContract.REGISTRY_LOCATION);
 		builder.setDefaultKey(new ResourceLocation(Mystique.MODID, "empty"));
+		builder.disableOverrides();
+		builder.disableSync();
+		builder.onAdd(ElementalAIRegistry::onAdd);
 		event.create(builder);
 	}
 
@@ -94,23 +93,10 @@ public class SetupEvent {
 
 	@SubscribeEvent
 	public static void enqueueIMC(InterModEnqueueEvent event) {
-//		InterModComms.sendTo(Mystique.MODID, "MemoryType", () -> MemoryModuleType);
-//		InterModComms.sendTo(Mystique.MODID, "SensorType", () -> SensorType);
 	}
 
 	@SubscribeEvent
 	public static void processIMC(InterModProcessEvent event) {
-		InterModComms.getMessages(Mystique.MODID, "MemoryType"::equals)
-		.map(IMCMessage::messageSupplier)
-		.map(Supplier::get)
-		.map(MemoryModuleType.class::cast)
-		.forEach(ElementalAIRegistry::addMemoryType);
-		InterModComms.getMessages(Mystique.MODID, "SensorType"::equals)
-		.map(IMCMessage::messageSupplier)
-		.map(Supplier::get)
-		.map(SensorType.class::cast)
-		.forEach(ElementalAIRegistry::addSensorType);
-		ElementalAIRegistry.initRegistries();
 	}
 
 	@SubscribeEvent

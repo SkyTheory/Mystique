@@ -19,6 +19,8 @@ public class ResetEatItem extends OneShot<AbstractElemental> {
 				pLevel.addFreshEntity(itemEntity);
 				pEntity.setEatingItem(ItemStack.EMPTY);
 			}
+			pEntity.getEntityData().set(AbstractElemental.DATA_IS_EATING, false);
+			pEntity.getEntityData().set(AbstractElemental.DATA_EATING_TICKS, 0);
 			pEntity.getBrain().useDefaultActivity();
 		}
 		return true;

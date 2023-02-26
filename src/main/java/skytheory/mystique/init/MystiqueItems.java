@@ -3,6 +3,7 @@ package skytheory.mystique.init;
 import net.minecraft.world.item.Item;
 import skytheory.mystique.item.FieldMarkerItem;
 import skytheory.mystique.item.ManaCapacitorCreativeItem;
+import skytheory.mystique.item.ManaCapacitorItem;
 
 public class MystiqueItems {
 
