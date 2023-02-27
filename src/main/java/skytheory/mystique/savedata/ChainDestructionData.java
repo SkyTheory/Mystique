@@ -1,10 +1,9 @@
 package skytheory.mystique.savedata;
 
-import java.util.ArrayDeque;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Deque;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.Set;
 
 import net.minecraft.nbt.CompoundTag;
@@ -18,7 +17,7 @@ public class ChainDestructionData implements INBTSerializable<CompoundTag> {
 	public static final int DELAY_TICKS = 4;
 
 	private final MystiqueLevelData storage;
-	private final Deque<Set<ChainTarget>> targets = new ArrayDeque<>();
+	private final LinkedList<Set<ChainTarget>> targets = new LinkedList<>(); 
 
 	public ChainDestructionData(MystiqueLevelData storage) {
 		this.storage = storage;
@@ -52,12 +51,18 @@ public class ChainDestructionData implements INBTSerializable<CompoundTag> {
 			targets.addLast(datas);
 		}
 	}
+	
+	public void push(Collection<ChainTarget> targets) {
+		for (var target : targets) {
+			this.push(target, target.target().distManhattan(target.origin()) * DELAY_TICKS);
+		}
+	}
 
-	public void push(Collection<ChainTarget> entries) {
-		for (int i = targets.size(); i < DELAY_TICKS; i++) {
+	public void push(ChainTarget target, int index) {
+		for (int i = targets.size(); i < index; i++) {
 			targets.addLast(new HashSet<>());
 		}
-		targets.peekLast().addAll(entries);
+		targets.get(index).add(target);
 		storage.setDirty();
 	}
 
