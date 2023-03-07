@@ -13,7 +13,7 @@ import skytheory.mystique.init.SetupEvent;
 public class Mystique {
 	
 	public static final String MODID = "mystique";
-	
+
 	public Mystique() {
 		
 		IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus(); 

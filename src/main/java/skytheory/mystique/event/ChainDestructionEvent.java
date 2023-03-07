@@ -7,12 +7,17 @@ import java.util.function.ToIntFunction;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.FallingBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.registries.ForgeRegistries;
 import skytheory.lib.util.LevelUtils;
+import skytheory.mystique.savedata.ChainDestructionData;
 import skytheory.mystique.savedata.ChainTarget;
 import skytheory.mystique.savedata.MystiqueLevelData;
+import skytheory.mystique.tags.MystiqueBlockTags;
 
 public class ChainDestructionEvent {
 
@@ -26,49 +31,57 @@ public class ChainDestructionEvent {
 			.thenComparingInt(X_COMPARATOR)
 			.thenComparingInt(Y_COMPARATOR)
 			.thenComparingInt(Z_COMPARATOR);
-	
-	// TODO 座標収集・距離からtickを計算・tickからリストへの挿入
-	// LinkedListがListかつDequeになっている
-	
+
 	public static void trigger(ServerLevel level, BlockPos origin, int maxBlocks, int maxDist) {
 		Set<ChainTarget> targets = new HashSet<>();
 		Set<ChainTarget> nextTargets = new HashSet<>();
 		BlockState state = level.getBlockState(origin);
-		targets.add(new ChainTarget(level.dimension(), origin, origin, state, maxDist));
-		nextTargets.add(new ChainTarget(level.dimension(), origin, origin, state, maxDist));
-		Root: while (!nextTargets.isEmpty()) {
-			var checkSet = Set.copyOf(nextTargets);
-			nextTargets.clear();
-			for (var checkTarget : checkSet) {
-				Set<BlockPos> posSet = LevelUtils.getAdjacentPosIncludeDiagonal(checkTarget.target());
-				for (var pos : posSet) {
-					ChainTarget target = new ChainTarget(level.dimension(), pos, origin, state, maxDist);
-					if (target.isValid(level) && targets.add(target)) {
-						nextTargets.add(target);
+		if (!ForgeRegistries.BLOCKS.tags().getTag(MystiqueBlockTags.TINY_TNT_BLACKLIST).contains(state.getBlock())) {
+			targets.add(new ChainTarget(level.dimension(), origin, origin, state, maxDist));
+			nextTargets.add(new ChainTarget(level.dimension(), origin, origin, state, maxDist));
+			while (!nextTargets.isEmpty() && targets.size() < maxBlocks) {
+				var checkSet = Set.copyOf(nextTargets);
+				nextTargets.clear();
+				for (var checkTarget : checkSet) {
+					Set<BlockPos> posSet = LevelUtils.collectTangentPos(checkTarget.target());
+					for (var pos : posSet) {
+						ChainTarget target = new ChainTarget(level.dimension(), pos, origin, state, maxDist);
+						if (target.isValid(level) && targets.add(target)) {
+							nextTargets.add(target);
+						}
 					}
 				}
 			}
-			if (targets.size() >= maxBlocks) break Root;
+			var sorted = targets.stream()
+					.sorted(COMPARATOR)
+					.limit(maxBlocks)
+					.toList();
+			MystiqueLevelData.getLevelData(level).getChainDestructionData().enqueue(sorted);
 		}
-		var sorted = targets.stream()
-		.sorted(COMPARATOR)
-		.limit(maxBlocks)
-		.toList();
-		MystiqueLevelData.getLevelData(level).getChainDestructionData().push(sorted);
 	}
-	
+
 	@SubscribeEvent
 	public static void onTick(TickEvent.LevelTickEvent event) {
 		if (event.level instanceof ServerLevel level) {
-			var entries = MystiqueLevelData.getChainDestructionData(level).poll();
-			for (ChainTarget entry : entries) {
-				if (entry.isLoaded(level.getServer())) {
+			ChainDestructionData data = MystiqueLevelData.getChainDestructionData(level);
+			// Tick内でのターゲットを取得し、破壊する
+			Set<BlockPos> preventFall = new HashSet<>();
+			for (ChainTarget entry : data.dequeue()) {
+				if (entry.isPosLoaded(level.getServer())) {
 					if (entry.isValid(level)) {
 						BlockPos pos = entry.target();
 						BlockState state = entry.state();
 						LevelUtils.harvestBlock(level, pos, state);
+						Block block = state.getBlock();
+						if (block instanceof FallingBlock && level.getBlockState(pos.above()).getBlock().equals(block)) {
+							preventFall.add(pos.above());
+						}
 					}
 				}
+			}
+			// FallingBlockの落下処理を無効化しておく
+			for (BlockPos pos : preventFall) {
+				LevelUtils.removeTick(level, pos);
 			}
 		}
 	}

@@ -4,6 +4,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import skytheory.mystique.entity.FieldMarker;
 import skytheory.mystique.entity.Gnome;
+import skytheory.mystique.entity.TinyTNT;
 import skytheory.mystique.entity.Salamander;
 import skytheory.mystique.entity.Sylph;
 import skytheory.mystique.entity.Undine;
@@ -19,4 +20,8 @@ public class MystiqueEntityTypes {
 			.of(FieldMarker::new, MobCategory.MISC)
 			.sized(1.0f, 1.0f)
 			.build("mystique:field_marker");
+	public static final EntityType<TinyTNT> MICRO_DYNAMIS = EntityType.Builder
+			.of(TinyTNT::new, MobCategory.MISC)
+			.sized(1.0f, 1.0f)
+			.build("mystique:micro_dynamis");
 }

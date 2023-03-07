@@ -1,0 +1,19 @@
+{
+  "type": "mystique:preference",
+  "elements": {
+    "DARK": 0,
+    "DEATH": 3,
+    "LIFE": 0,
+    "LIGHT": 3
+  },
+  "entity_type": "mystique:salamander",
+  "food": {
+    "item": "minecraft:bread"
+  },
+  "gift_chance": 0.0,
+  "gift_item": {
+    "Count": 1,
+    "id": "minecraft:air"
+  },
+  "likeability": 3
+}

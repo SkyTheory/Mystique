@@ -2,13 +2,11 @@ package skytheory.mystique.client.renderer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.player.Player;
 import skytheory.lib.util.BlockRotation;
 import skytheory.mystique.Mystique;
 import skytheory.mystique.client.model.FieldMarkerModel;
@@ -25,10 +23,8 @@ public class FieldMarkerRenderer extends EntityRenderer<FieldMarker> {
 		this.model = new FieldMarkerModel(ctx.bakeLayer(FieldMarkerModel.LAYER_LOCATION));
 	}
 
-	@SuppressWarnings("resource")
 	public void render(FieldMarker pEntity, float pEntityYaw, float pPartialTick, PoseStack pPoseStack, MultiBufferSource pBuffer, int pPackedLight) {
-		Player player = Minecraft.getInstance().player;
-		if (!pEntity.canInteract(player)) return;
+		if (!pEntity.isPickable()) return;
 		if (pEntity == null || pEntity.isInvisible()) return;
 		pPoseStack.pushPose();
 		pPoseStack.scale(-1.0f, -1.0f, 1.0f);

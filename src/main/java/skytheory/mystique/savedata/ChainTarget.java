@@ -37,7 +37,7 @@ public record ChainTarget(ResourceKey<Level> level, BlockPos target, BlockPos or
 		return new ChainTarget(levelKey, target, origin, state, maxDistance);
 	}
 	
-	public boolean isLoaded(MinecraftServer server) {
+	public boolean isPosLoaded(MinecraftServer server) {
 		return server.getLevel(level).isLoaded(target);
 	}
 	
@@ -48,5 +48,5 @@ public record ChainTarget(ResourceKey<Level> level, BlockPos target, BlockPos or
 		if (pLevel.getBlockState(target).getBlock() != state.getBlock()) return false;
 		return true;
 	}
-
+	
 }

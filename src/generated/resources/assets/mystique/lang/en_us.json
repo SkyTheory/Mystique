@@ -13,6 +13,7 @@
   "block.mystique.ore_stone_water": "Water Element Ore",
   "entity.mystique.field_marker": "Marker",
   "entity.mystique.gnome": "Gnome",
+  "entity.mystique.micro_dynamis": "Fairy Dynamite",
   "entity.mystique.salamander": "Salamander",
   "entity.mystique.sylph": "Sylph",
   "entity.mystique.undine": "Undine",
@@ -36,6 +37,11 @@
   "item.mystique.shard_earth": "Earth Shard",
   "item.mystique.shard_fire": "Fire Shard",
   "item.mystique.shard_water": "Water Shard",
+  "item.mystique.spawn_egg_gnome": "Spawn Gnome",
+  "item.mystique.spawn_egg_salamander": "Spawn Salamander",
+  "item.mystique.spawn_egg_sylph": "Spawn Sylph",
+  "item.mystique.spawn_egg_undine": "Spawn Undine",
   "item.mystique.tool_stylus": "Mystical Stylus",
+  "item.mystique.tool_tiny_tnt": "Tiny TNT",
   "itemGroup.mystique": "Mystique"
 }

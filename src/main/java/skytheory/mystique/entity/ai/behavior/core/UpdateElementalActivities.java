@@ -15,6 +15,11 @@ public class UpdateElementalActivities extends OneShot<AbstractElemental> {
 		if (!brain.hasMemoryValue(MemoryModuleType.IS_PANICKING)) {
 			if (pEntity.isEatingItem() || !pEntity.getEatingItem().isEmpty()) {
 				brain.setActiveActivityIfPossible(MystiqueEntityActivities.EAT);
+				return true;
+			}
+			if (pEntity.isInteractingByPlayer()) {
+				brain.setActiveActivityIfPossible(MystiqueEntityActivities.INTERACTING);
+				return true;
 			}
 		}
 		return true;

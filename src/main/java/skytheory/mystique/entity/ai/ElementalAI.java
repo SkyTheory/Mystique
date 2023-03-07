@@ -1,7 +1,5 @@
 package skytheory.mystique.entity.ai;
 
-import java.util.List;
-
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 
@@ -24,14 +22,12 @@ import skytheory.mystique.entity.ai.behavior.core.FollowTemptationWithoutCooldow
 import skytheory.mystique.entity.ai.behavior.core.UpdateElementalActivities;
 import skytheory.mystique.entity.ai.behavior.eat.EatItem;
 import skytheory.mystique.entity.ai.behavior.eat.ResetEatItem;
+import skytheory.mystique.entity.ai.behavior.interacting.FollowInteractingPlayer;
+import skytheory.mystique.entity.ai.behavior.interacting.ResetInteractingPlayer;
 import skytheory.mystique.init.ElementalAIRegistry;
 import skytheory.mystique.init.MystiqueEntityActivities;
 
 public class ElementalAI {
-
-	public static final List<Activity> HOLDING_ACTIVITIES = ImmutableList.of(
-			MystiqueEntityActivities.EAT
-			);
 
 	public static Provider<AbstractElemental> brainProvider() {
 		return Brain.provider(ElementalAIRegistry.getMemoryTypes(), ElementalAIRegistry.getSensorTypes());
@@ -42,6 +38,7 @@ public class ElementalAI {
 		initCoreActivity(pBrain);
 		initIdleActivity(pBrain);
 		initEatingActivity(pBrain);
+		initInteractingActivity(pBrain);
 		pBrain.setCoreActivities(ImmutableSet.of(Activity.CORE));
 		pBrain.setDefaultActivity(Activity.IDLE);
 		pBrain.useDefaultActivity();
@@ -74,9 +71,16 @@ public class ElementalAI {
 
 	private static void initEatingActivity(Brain<AbstractElemental> brain) {
 		brain.addActivity(MystiqueEntityActivities.EAT, 0, ImmutableList.of(
-				new RunOnePrioritized<AbstractElemental>()
-				.addBehavior(new EatItem())
-				.addBehavior(new ResetEatItem())));
+				new EatItem(),
+				new ResetEatItem()
+				));
+	}
+
+	private static void initInteractingActivity(Brain<AbstractElemental> brain) {
+		brain.addActivity(MystiqueEntityActivities.INTERACTING, 0, ImmutableList.of(
+				new FollowInteractingPlayer(1.0f),
+				new ResetInteractingPlayer()
+				));
 	}
 
 }

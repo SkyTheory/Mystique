@@ -1,4 +1,4 @@
-// 1.19.3	2023-02-20T09:18:19.3532381	Item Models: mystique
+// 1.19.3	2023-03-04T04:00:27.6797887	Item Models: mystique
 a87bb48e52dbd4a4e3c5f6b533f328cb57f9ce22 assets/mystique/models/item/contract_document.json
 48e57386a55864d78e720c0dd0390add0aac0602 assets/mystique/models/item/crux_air.json
 830d6ed415312fbac44e19b91528130986728c98 assets/mystique/models/item/crux_earth.json
@@ -31,4 +31,9 @@ c140b1574e9ea463a45ba2f4f7aa09f9d3c422e2 assets/mystique/models/item/schist_wate
 1228be20bd67586804880a912507a0098e11f398 assets/mystique/models/item/shard_earth.json
 f8fafc5ab090c4a94c5fdc925235303c97b64ef2 assets/mystique/models/item/shard_fire.json
 415e6e6ef5d9849c322cc3a954da14a02bfbff9d assets/mystique/models/item/shard_water.json
+63ec6c618a3a23eab4cab9c52d7d3250de9b516e assets/mystique/models/item/spawn_egg_gnome.json
+63ec6c618a3a23eab4cab9c52d7d3250de9b516e assets/mystique/models/item/spawn_egg_salamander.json
+63ec6c618a3a23eab4cab9c52d7d3250de9b516e assets/mystique/models/item/spawn_egg_sylph.json
+63ec6c618a3a23eab4cab9c52d7d3250de9b516e assets/mystique/models/item/spawn_egg_undine.json
 1368bc093d6bd9b42045e1887c5a9f0c6125b85f assets/mystique/models/item/tool_stylus.json
+a15cbfb99b45f39c71873a0ee5d388048ffefe2d assets/mystique/models/item/tool_tiny_tnt.json

@@ -23,17 +23,18 @@ public class ChainHarvestData implements INBTSerializable<CompoundTag> {
 		this.queue = new ArrayDeque<>();
 	}
 	
-	public void push(Set<ChainTarget> entries) {
+	public void enqueue(Set<ChainTarget> entries) {
 		for (int i = queue.size(); i < DELAY_TICKS; i++) {
 			queue.addLast(new HashSet<>());
 		}
 		queue.peekLast().addAll(entries);
 	}
 	
-	public Set<ChainTarget> poll() {
+	public Set<ChainTarget> dequeue() {
 		if (queue.isEmpty()) return Collections.emptySet();
 		return queue.poll();
 	}
+	
 	@Override
 	public CompoundTag serializeNBT() {
 		CompoundTag nbt = new CompoundTag();

@@ -13,13 +13,16 @@ import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -34,10 +37,11 @@ import skytheory.lib.capability.itemhandler.ItemHandlerListener;
 import skytheory.lib.network.EntityMessage;
 import skytheory.lib.network.SkyTheoryLibNetwork;
 import skytheory.lib.util.ItemHandlerUtils;
+import skytheory.mystique.container.ElementalContainerMenu;
 import skytheory.mystique.entity.ai.ElementalAI;
 import skytheory.mystique.recipe.PreferenceRecipe;
 
-public class AbstractElemental extends PathfinderMob implements DataSync, ItemHandlerListener, IEntityAdditionalSpawnData {
+public class AbstractElemental extends PathfinderMob implements MenuProvider, DataSync, ItemHandlerListener, IEntityAdditionalSpawnData {
 
 	public static final float HITBOX_WIDTH = 0.5f;
 	public static final float HITBOX_HEIGHT = 1.40625f;
@@ -50,7 +54,8 @@ public class AbstractElemental extends PathfinderMob implements DataSync, ItemHa
 	public static final EntityDataAccessor<Boolean> DATA_IS_EATING = SynchedEntityData.defineId(AbstractElemental.class, EntityDataSerializers.BOOLEAN);
 	public static final EntityDataAccessor<Integer> DATA_EATING_TICKS = SynchedEntityData.defineId(AbstractElemental.class, EntityDataSerializers.INT);
 
-	protected ItemHandler itemHandler;
+	public ItemHandler itemHandler;
+	public Player interactingPlayer;
 
 	protected AbstractElemental(EntityType<? extends AbstractElemental> p_21368_, Level p_21369_) {
 		super(p_21368_, p_21369_);
@@ -164,11 +169,42 @@ public class AbstractElemental extends PathfinderMob implements DataSync, ItemHa
 					if (stack.isEmpty()) stack = ItemStack.EMPTY;
 					pPlayer.setItemInHand(InteractionHand.MAIN_HAND, stack);
 				}
+				return InteractionResult.CONSUME;
+			}
+			if (pPlayer instanceof ServerPlayer serverPlayer) {
+				NetworkHooks.openScreen(serverPlayer, this, buf -> buf.writeInt(this.getId()));
+				this.setInteractingPlayer(serverPlayer);
+				return InteractionResult.CONSUME;
 			}
 		}
 		return super.mobInteract(pPlayer, pHand);
 	}
 
+	/*
+	 * GUI関連
+	 */
+	
+	@Override
+	public ElementalContainerMenu createMenu(int pContainerId, Inventory pPlayerInventory, Player pPlayer) {
+		return new ElementalContainerMenu(pContainerId, pPlayerInventory, pPlayer, this);
+	}
+
+	public void setInteractingPlayer(Player player) {
+		this.interactingPlayer = player;
+	}
+	
+	public void resetInteractingPlayer() {
+		setInteractingPlayer(null);
+	}
+	
+	public Player getInteractingPlayer() {
+		return interactingPlayer;
+	}
+	
+	public boolean isInteractingByPlayer() {
+		return interactingPlayer != null;
+	}
+	
 	/*
 	 * Tick関連
 	 */

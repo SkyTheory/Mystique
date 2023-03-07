@@ -19,8 +19,14 @@ public class LanguageProviderEN extends LanguageProvider {
 		add(MystiqueItems.MANA_CAPACITOR_CREATIVE, "Creative Mana Capacitor");
 
 		add(MystiqueItems.CONTRACT_DOCUMENT, "Contract Document");
-		
+
 		add(MystiqueItems.TOOL_STYLUS, "Mystical Stylus");
+		add(MystiqueItems.TOOL_TINY_TNT, "Tiny TNT");
+
+		add(MystiqueItems.SPAWN_EGG_SALAMANDER, "Spawn Salamander");
+		add(MystiqueItems.SPAWN_EGG_SYLPH, "Spawn Sylph");
+		add(MystiqueItems.SPAWN_EGG_UNDINE, "Spawn Undine");
+		add(MystiqueItems.SPAWN_EGG_GNOME, "Spawn Gnome");
 
 		add(MystiqueItems.SCHIST, "Schist");
 		
@@ -63,8 +69,9 @@ public class LanguageProviderEN extends LanguageProvider {
 		add(MystiqueEntityTypes.SYLPH, "Sylph");
 		add(MystiqueEntityTypes.UNDINE, "Undine");
 		add(MystiqueEntityTypes.GNOME, "Gnome");
-		
+
 		add(MystiqueEntityTypes.FIELD_MARKER, "Marker");
+		add(MystiqueEntityTypes.MICRO_DYNAMIS, "Fairy Dynamite");
 		
 		add("itemGroup.mystique", "Mystique");
 	}

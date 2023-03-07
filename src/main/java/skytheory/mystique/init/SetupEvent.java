@@ -2,6 +2,7 @@ package skytheory.mystique.init;
 
 import java.util.concurrent.CompletableFuture;
 
+import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;
@@ -9,6 +10,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ai.sensing.SensorType;
 import net.minecraft.world.entity.schedule.Activity;
 import net.minecraft.world.entity.schedule.Schedule;
+import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
@@ -35,12 +37,15 @@ import skytheory.mystique.client.model.FieldMarkerModel;
 import skytheory.mystique.client.model.GnomeModel;
 import skytheory.mystique.client.model.SalamanderModel;
 import skytheory.mystique.client.model.SylphModel;
+import skytheory.mystique.client.model.TinyTNTModel;
 import skytheory.mystique.client.model.UndineModel;
 import skytheory.mystique.client.renderer.FieldMarkerRenderer;
 import skytheory.mystique.client.renderer.GnomeRenderer;
 import skytheory.mystique.client.renderer.SalamanderRenderer;
 import skytheory.mystique.client.renderer.SylphRenderer;
+import skytheory.mystique.client.renderer.TinyTNTRenderer;
 import skytheory.mystique.client.renderer.UndineRenderer;
+import skytheory.mystique.client.screen.ElementalContainerScreen;
 import skytheory.mystique.data.BlockModelGenerator;
 import skytheory.mystique.data.BlockTagsGenerator;
 import skytheory.mystique.data.ContractProvider;
@@ -73,6 +78,7 @@ public class SetupEvent {
 		ResourceRegister.registerAll(event, Activity.class, ForgeRegistries.Keys.ACTIVITIES, MystiqueEntityActivities.class);
 		ResourceRegister.registerAll(event, Schedule.class, ForgeRegistries.Keys.SCHEDULES, MystiqueEntitySchedules.class);
 		ResourceRegister.registerAll(event, SensorType.class, ForgeRegistries.Keys.SENSOR_TYPES, MystiqueEntitySensors.class);
+		ResourceRegister.registerAll(event, MenuType.class, ForgeRegistries.Keys.MENU_TYPES, MystiqueMenuTypes.class);
 		ResourceRegister.registerAll(event, RecipeType.class, ForgeRegistries.Keys.RECIPE_TYPES, MystiqueRecipeTypes.class);
 		ResourceRegister.registerAll(event, RecipeSerializer.class, ForgeRegistries.Keys.RECIPE_SERIALIZERS, MystiqueRecipeSerializers.class);
 		ResourceRegister.registerAll(event, MystiqueContract.class, MystiqueRegistries.Keys.CONTRACTS, MystiqueEntityContracts.class);
@@ -89,6 +95,7 @@ public class SetupEvent {
 
 	@SubscribeEvent
 	public static void clientSetup(FMLClientSetupEvent event) {
+		MenuScreens.register(MystiqueMenuTypes.ELEMENTAL_MENU, ElementalContainerScreen::new);
 	}
 
 	@SubscribeEvent
@@ -132,6 +139,7 @@ public class SetupEvent {
 		event.registerEntityRenderer(MystiqueEntityTypes.SYLPH, SylphRenderer::new);
 		event.registerEntityRenderer(MystiqueEntityTypes.UNDINE, UndineRenderer::new);
 		event.registerEntityRenderer(MystiqueEntityTypes.FIELD_MARKER, FieldMarkerRenderer::new);
+		event.registerEntityRenderer(MystiqueEntityTypes.MICRO_DYNAMIS, TinyTNTRenderer::new);
 	}
 
 	@SubscribeEvent
@@ -141,5 +149,6 @@ public class SetupEvent {
 		event.registerLayerDefinition(SylphModel.LAYER_LOCATION, SylphModel::createBodyLayer);
 		event.registerLayerDefinition(UndineModel.LAYER_LOCATION, UndineModel::createBodyLayer);
 		event.registerLayerDefinition(FieldMarkerModel.LAYER_LOCATION, FieldMarkerModel::createBodyLayer);
+		event.registerLayerDefinition(TinyTNTModel.LAYER_LOCATION, TinyTNTModel::createBodyLayer);
 	}
 }

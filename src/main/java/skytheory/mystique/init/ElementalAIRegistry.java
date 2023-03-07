@@ -29,10 +29,10 @@ public class ElementalAIRegistry {
 
 	private static final Set<MemoryModuleType<?>> DEFAULT_MEMORY_TYPES = ImmutableSet.of(
 			MemoryModuleType.LOOK_TARGET,
-			MemoryModuleType.NEAREST_HOSTILE,
-			MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE,
 			MemoryModuleType.WALK_TARGET,
+			MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE,
 			MemoryModuleType.PATH,
+			MemoryModuleType.NEAREST_HOSTILE,
 			MemoryModuleType.TEMPTING_PLAYER,
 			MemoryModuleType.IS_TEMPTED,
 			MemoryModuleType.IS_PANICKING);
