@@ -1,4 +1,4 @@
-package skytheory.mystique.item;
+package skytheory.mystique.entity.ai.contract;
 
 import java.util.Collection;
 
@@ -10,9 +10,14 @@ import net.minecraft.world.entity.ai.sensing.Sensor;
 import net.minecraft.world.entity.ai.sensing.SensorType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.schedule.Activity;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import skytheory.mystique.Mystique;
+import skytheory.mystique.client.model.pose.DefaultPose;
+import skytheory.mystique.client.model.pose.ElementalPoseTransformer;
+import skytheory.mystique.client.renderer.itemlayer.DefaultItemRenderer;
+import skytheory.mystique.client.renderer.itemlayer.ElementalItemRenderer;
 import skytheory.mystique.entity.AbstractElemental;
-import skytheory.mystique.entity.ai.contract.DefaultContract;
 import skytheory.mystique.recipe.ContractRecipe;
 
 public interface MystiqueContract {
@@ -63,5 +68,15 @@ public interface MystiqueContract {
 
 	default void enterContract(AbstractElemental entity) {}
 	default void leaveContract(AbstractElemental entity) {}
+	
+	@OnlyIn(Dist.CLIENT)
+	default ElementalPoseTransformer getPoseTransformer(AbstractElemental entity) {
+		return DefaultPose::transform;
+	}
+
+	@OnlyIn(Dist.CLIENT)
+	default ElementalItemRenderer getItemRenderer(AbstractElemental entity) {
+		return DefaultItemRenderer::render;
+	}
 	
 }

@@ -10,10 +10,10 @@ import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.monster.Spider;
 import skytheory.mystique.entity.AbstractElemental;
+import skytheory.mystique.entity.ai.contract.MystiqueContract;
 import skytheory.mystique.entity.ai.sensor.util.ContractSensorBase;
 import skytheory.mystique.init.MystiqueContracts;
 import skytheory.mystique.init.MystiqueMemoryModuleTypes;
-import skytheory.mystique.item.MystiqueContract;
 
 public class IdleHostileSensor extends ContractSensorBase {
 

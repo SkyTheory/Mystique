@@ -3,7 +3,7 @@ package skytheory.mystique.init;
 import skytheory.mystique.entity.ai.contract.CollectContract;
 import skytheory.mystique.entity.ai.contract.EatItemContract;
 import skytheory.mystique.entity.ai.contract.InteractingPlayerContract;
-import skytheory.mystique.item.MystiqueContract;
+import skytheory.mystique.entity.ai.contract.MystiqueContract;
 
 public class MystiqueContracts {
 

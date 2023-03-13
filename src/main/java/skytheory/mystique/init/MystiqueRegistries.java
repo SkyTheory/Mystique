@@ -4,7 +4,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.RegistryManager;
-import skytheory.mystique.item.MystiqueContract;
+import skytheory.mystique.entity.ai.contract.MystiqueContract;
 
 public class MystiqueRegistries {
 

@@ -19,9 +19,9 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import skytheory.mystique.Mystique;
+import skytheory.mystique.entity.ai.contract.MystiqueContract;
 import skytheory.mystique.init.MystiqueRecipeTypes;
 import skytheory.mystique.init.MystiqueRegistries;
-import skytheory.mystique.item.MystiqueContract;
 
 public class ContractRecipe implements Recipe<Container> {
 

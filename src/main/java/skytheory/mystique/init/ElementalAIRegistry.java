@@ -16,7 +16,7 @@ import net.minecraft.world.entity.ai.sensing.SensorType;
 import net.minecraftforge.registries.IForgeRegistryInternal;
 import net.minecraftforge.registries.RegistryManager;
 import skytheory.mystique.entity.AbstractElemental;
-import skytheory.mystique.item.MystiqueContract;
+import skytheory.mystique.entity.ai.contract.MystiqueContract;
 
 /**
  * ElementalのAIに登録するMemoryModuleとSensorのレジストリ

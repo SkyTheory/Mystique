@@ -13,7 +13,6 @@ import skytheory.mystique.container.ElementalContainerMenu;
 import skytheory.mystique.entity.AbstractElemental;
 import skytheory.mystique.entity.ai.behavior.interacting.FollowInteractingPlayer;
 import skytheory.mystique.init.MystiqueActivities;
-import skytheory.mystique.item.MystiqueContract;
 
 public class InteractingPlayerContract implements MystiqueContract {
 

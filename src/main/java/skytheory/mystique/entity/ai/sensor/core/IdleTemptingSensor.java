@@ -13,9 +13,9 @@ import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.targeting.TargetingConditions;
 import net.minecraft.world.entity.player.Player;
 import skytheory.mystique.entity.AbstractElemental;
+import skytheory.mystique.entity.ai.contract.MystiqueContract;
 import skytheory.mystique.entity.ai.sensor.util.ContractSensorBase;
 import skytheory.mystique.init.MystiqueContracts;
-import skytheory.mystique.item.MystiqueContract;
 
 public class IdleTemptingSensor extends ContractSensorBase {
 

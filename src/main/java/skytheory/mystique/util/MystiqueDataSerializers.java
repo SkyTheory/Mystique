@@ -3,8 +3,8 @@ package skytheory.mystique.util;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.syncher.EntityDataSerializer;
 import net.minecraft.network.syncher.EntityDataSerializers;
+import skytheory.mystique.entity.ai.contract.MystiqueContract;
 import skytheory.mystique.init.MystiqueRegistries;
-import skytheory.mystique.item.MystiqueContract;
 
 public class MystiqueDataSerializers {
 

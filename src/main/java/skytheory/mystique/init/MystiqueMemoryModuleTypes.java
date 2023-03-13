@@ -5,7 +5,7 @@ import java.util.Optional;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.item.ItemEntity;
-import skytheory.mystique.item.MystiqueContract;
+import skytheory.mystique.entity.ai.contract.MystiqueContract;
 
 public class MystiqueMemoryModuleTypes {
 

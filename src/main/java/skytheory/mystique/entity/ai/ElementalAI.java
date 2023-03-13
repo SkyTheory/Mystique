@@ -12,10 +12,10 @@ import net.minecraft.world.entity.schedule.Activity;
 import skytheory.mystique.entity.AbstractElemental;
 import skytheory.mystique.entity.ai.behavior.core.FloatFluid;
 import skytheory.mystique.entity.ai.behavior.core.UpdateElementalActivities;
+import skytheory.mystique.entity.ai.contract.MystiqueContract;
 import skytheory.mystique.init.ElementalAIRegistry;
 import skytheory.mystique.init.MystiqueContracts;
 import skytheory.mystique.init.MystiqueRegistries;
-import skytheory.mystique.item.MystiqueContract;
 
 public class ElementalAI {
 

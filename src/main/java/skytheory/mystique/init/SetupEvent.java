@@ -52,7 +52,7 @@ import skytheory.mystique.data.ContractProvider;
 import skytheory.mystique.data.ItemModelGenerator;
 import skytheory.mystique.data.LanguageProviderEN;
 import skytheory.mystique.data.PreferenceProvider;
-import skytheory.mystique.item.MystiqueContract;
+import skytheory.mystique.entity.ai.contract.MystiqueContract;
 import skytheory.mystique.util.ElementalUtils;
 
 public class SetupEvent {

@@ -4,7 +4,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.sensing.Sensor;
 import skytheory.mystique.entity.AbstractElemental;
-import skytheory.mystique.item.MystiqueContract;
+import skytheory.mystique.entity.ai.contract.MystiqueContract;
 
 public abstract class ContractSensorBase extends Sensor<AbstractElemental> {
 

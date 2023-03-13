@@ -4,7 +4,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.ai.behavior.Behavior.Status;
 import net.minecraft.world.entity.ai.behavior.BehaviorControl;
 import skytheory.mystique.entity.AbstractElemental;
-import skytheory.mystique.item.MystiqueContract;
+import skytheory.mystique.entity.ai.contract.MystiqueContract;
 
 public class BehaviorWrapper implements BehaviorControl<AbstractElemental> {
 

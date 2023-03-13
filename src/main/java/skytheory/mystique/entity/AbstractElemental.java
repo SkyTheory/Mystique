@@ -42,10 +42,11 @@ import skytheory.lib.util.ItemHandlerStream.ItemHandlerSlot;
 import skytheory.lib.util.ItemHandlerUtils;
 import skytheory.mystique.container.ElementalContainerMenu;
 import skytheory.mystique.entity.ai.ElementalAI;
+import skytheory.mystique.entity.ai.contract.MystiqueContract;
 import skytheory.mystique.init.MystiqueContracts;
 import skytheory.mystique.init.MystiqueRegistries;
-import skytheory.mystique.item.MystiqueContract;
 import skytheory.mystique.recipe.PreferenceRecipe;
+import skytheory.mystique.util.MystiqueDataSerializers;
 
 public class AbstractElemental extends PathfinderMob implements MenuProvider, DataSync, ItemHandlerListener, IEntityAdditionalSpawnData {
 
@@ -60,6 +61,7 @@ public class AbstractElemental extends PathfinderMob implements MenuProvider, Da
 
 	public static final EntityDataAccessor<Boolean> DATA_IS_EATING = SynchedEntityData.defineId(AbstractElemental.class, EntityDataSerializers.BOOLEAN);
 	public static final EntityDataAccessor<Integer> DATA_EATING_TICKS = SynchedEntityData.defineId(AbstractElemental.class, EntityDataSerializers.INT);
+	public static final EntityDataAccessor<MystiqueContract> DATA_CONTRACT = SynchedEntityData.defineId(AbstractElemental.class, MystiqueDataSerializers.SERIALIZER_CONTRACT);
 
 	private InventoryHandler itemHandler;
 	private InventoryHandler filters;
@@ -103,6 +105,7 @@ public class AbstractElemental extends PathfinderMob implements MenuProvider, Da
 	protected void defineSynchedData() {
 		this.entityData.define(DATA_IS_EATING, false);
 		this.entityData.define(DATA_EATING_TICKS, 0);
+		this.entityData.define(DATA_CONTRACT, MystiqueContracts.DEFAULT);
 		super.defineSynchedData();
 	}
 
@@ -227,7 +230,7 @@ public class AbstractElemental extends PathfinderMob implements MenuProvider, Da
 	@Override
 	public void tick() {
 		if (!this.level.isClientSide()) {
-//			LogUtils.getLogger().debug(MystiqueRegistries.CONTRACTS.getKey(getContract()).toString());
+			//			LogUtils.getLogger().debug(MystiqueRegistries.CONTRACTS.getKey(getContract()).toString());
 		}
 		super.tick();
 	}
@@ -278,10 +281,14 @@ public class AbstractElemental extends PathfinderMob implements MenuProvider, Da
 	}
 
 	public MystiqueContract getContract() {
-		return MystiqueRegistries.CONTRACTS.getValues().stream()
-				.sorted(Comparator.comparingInt(MystiqueContract::getPriority))
-				.filter(c -> c.canApplyContract(this))
-				.findFirst().orElse(MystiqueContracts.DEFAULT);
+		if (this.level.isClientSide) {
+			return this.entityData.get(DATA_CONTRACT);
+		} else {
+			return MystiqueRegistries.CONTRACTS.getValues().stream()
+					.sorted(Comparator.comparingInt(MystiqueContract::getPriority))
+					.filter(c -> c.canApplyContract(this))
+					.findFirst().orElse(MystiqueContracts.DEFAULT);
+		}
 	}
 
 	/*

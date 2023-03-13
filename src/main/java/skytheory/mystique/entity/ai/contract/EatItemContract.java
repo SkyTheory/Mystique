@@ -8,11 +8,16 @@ import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.sensing.Sensor;
 import net.minecraft.world.entity.ai.sensing.SensorType;
 import net.minecraft.world.entity.schedule.Activity;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import skytheory.mystique.client.model.pose.EatingPose;
+import skytheory.mystique.client.model.pose.ElementalPoseTransformer;
+import skytheory.mystique.client.renderer.itemlayer.EatingItemRenderer;
+import skytheory.mystique.client.renderer.itemlayer.ElementalItemRenderer;
 import skytheory.mystique.entity.AbstractElemental;
 import skytheory.mystique.entity.ai.behavior.eat.EatItem;
 import skytheory.mystique.entity.ai.behavior.eat.ThrowNonEdibleItem;
 import skytheory.mystique.init.MystiqueActivities;
-import skytheory.mystique.item.MystiqueContract;
 
 public class EatItemContract implements MystiqueContract {
 
@@ -49,5 +54,17 @@ public class EatItemContract implements MystiqueContract {
 				new ThrowNonEdibleItem()
 				);
 	}
+	
+	@OnlyIn(Dist.CLIENT)
+	@Override
+	public ElementalPoseTransformer getPoseTransformer(AbstractElemental entity) {
+		return EatingPose::transform;
+	}
 
+	@OnlyIn(Dist.CLIENT)
+	@Override
+	public ElementalItemRenderer getItemRenderer(AbstractElemental entity) {
+		return EatingItemRenderer::render;
+	}
+	
 }

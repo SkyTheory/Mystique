@@ -15,7 +15,6 @@ import skytheory.mystique.entity.ai.behavior.core.FollowTemptationWithoutCooldow
 import skytheory.mystique.entity.ai.behavior.idle.IdleWalkingBehavior;
 import skytheory.mystique.init.MystiqueMemoryModuleTypes;
 import skytheory.mystique.init.MystiqueSensorTypes;
-import skytheory.mystique.item.MystiqueContract;
 
 public class DefaultContract implements MystiqueContract {
 
