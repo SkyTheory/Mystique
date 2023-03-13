@@ -3,7 +3,6 @@ package skytheory.mystique.entity.ai.behavior.interacting;
 import java.util.Map;
 
 import com.google.common.collect.ImmutableMap;
-import com.mojang.logging.LogUtils;
 
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.ai.Brain;
@@ -49,7 +48,6 @@ public class FollowInteractingPlayer extends Behavior<AbstractElemental> {
 	protected void stop(ServerLevel pLevel, AbstractElemental pEntity, long pGameTime) {
 		Brain<?> brain = pEntity.getBrain();
 		brain.eraseMemory(MemoryModuleType.WALK_TARGET);
-		LogUtils.getLogger().info("Behaviour Stopped!");
 	}
 
 	protected void tick(ServerLevel pLevel, AbstractElemental pOwner, long pGameTime) {

@@ -1,7 +1,6 @@
 package skytheory.mystique.recipe;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -83,11 +82,14 @@ public class ContractRecipe implements Recipe<Container> {
 		return item.test(stack);
 	}
 	
-	public static Optional<ContractRecipe> getRecipe(Entity entity, ItemStack stack) {
-		return getRecipes(entity, stack).stream().findFirst();
+	public static MystiqueContract getContract(Entity entity, ItemStack stack) {
+		return entity.getLevel().getRecipeManager().getAllRecipesFor(MystiqueRecipeTypes.CONTRACT).stream()
+		.filter(recipe -> recipe.matches(entity, stack))
+		.map(ContractRecipe::getContract)
+		.findFirst().orElse(MystiqueContract.DEFAULT);
 	}
 	
-	public static List<ContractRecipe> getRecipes(Entity entity, ItemStack stack) {
+	public static List<ContractRecipe> getRecipesFor(Entity entity, ItemStack stack) {
 		return entity.getLevel().getRecipeManager().getAllRecipesFor(MystiqueRecipeTypes.CONTRACT).stream()
 				.filter(recipe -> recipe.matches(entity, stack))
 				.toList();

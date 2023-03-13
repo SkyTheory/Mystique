@@ -57,11 +57,15 @@ public class GnomeModel extends AbstractElementalModel<Gnome> {
 
 		PartDefinition scapula = torso.addOrReplaceChild("scapula", CubeListBuilder.create(), PartPose.offset(0.0F, 1.5F, 0.0F));
 
-		scapula.addOrReplaceChild("armLeft", CubeListBuilder.create().texOffs(40, 0).addBox(-0.1F, -1.0F, -1.0F, 2.0F, 9.0F, 2.0F, new CubeDeformation(-0.2F))
+		PartDefinition armLeft = scapula.addOrReplaceChild("armLeft", CubeListBuilder.create().texOffs(40, 0).addBox(-0.1F, -1.0F, -1.0F, 2.0F, 9.0F, 2.0F, new CubeDeformation(-0.2F))
 		.texOffs(30, 29).mirror().addBox(0.0F, -1.0F, -1.0F, 2.0F, 8.0F, 2.0F, new CubeDeformation(0.0F)).mirror(false), PartPose.offsetAndRotation(3.0F, 0.0F, 0.0F, 0.0F, 0.0F, -0.1745F));
 
-		scapula.addOrReplaceChild("armRight", CubeListBuilder.create().texOffs(32, 0).addBox(-1.9F, -1.0F, -1.0F, 2.0F, 9.0F, 2.0F, new CubeDeformation(-0.2F))
+		armLeft.addOrReplaceChild("itemLeftHand", CubeListBuilder.create(), PartPose.offset(1.0F, 7.8F, -0.8F));
+
+		PartDefinition armRight = scapula.addOrReplaceChild("armRight", CubeListBuilder.create().texOffs(32, 0).addBox(-1.9F, -1.0F, -1.0F, 2.0F, 9.0F, 2.0F, new CubeDeformation(-0.2F))
 		.texOffs(30, 29).addBox(-2.0F, -1.0F, -1.0F, 2.0F, 8.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-3.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.1745F));
+
+		armRight.addOrReplaceChild("itemRightHand", CubeListBuilder.create(), PartPose.offset(-1.0F, 7.8F, -0.8F));
 
 		PartDefinition cloth = torso.addOrReplaceChild("cloth", CubeListBuilder.create().texOffs(0, 46).mirror().addBox(-0.9F, -0.8F, -3.5F, 5.0F, 11.0F, 7.0F, new CubeDeformation(-0.9F)).mirror(false)
 		.texOffs(0, 46).addBox(-4.1F, -0.8F, -3.5F, 5.0F, 11.0F, 7.0F, new CubeDeformation(-0.9F))

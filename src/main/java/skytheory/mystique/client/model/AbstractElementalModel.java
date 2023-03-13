@@ -6,27 +6,31 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.logging.LogUtils;
 
+import net.minecraft.client.model.ArmedModel;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.HumanoidArm;
 import skytheory.lib.util.FloatUtils;
 import skytheory.mystique.entity.AbstractElemental;
 import skytheory.mystique.entity.ai.behavior.eat.EatItem;
 import skytheory.mystique.util.ModelPoseUtils;
 
-public class AbstractElementalModel<T extends AbstractElemental> extends EntityModel<T> {
+public class AbstractElementalModel<T extends AbstractElemental> extends EntityModel<T> implements ArmedModel {
 	
 	protected float partialTick;
 	
-	protected ModelPart root;
-	protected ModelPart head;
-	protected ModelPart torso;
-	protected ModelPart scapula;
-	protected ModelPart armLeft;
-	protected ModelPart armRight;
-	protected ModelPart pelvis;
-	protected ModelPart legLeft;
-	protected ModelPart legRight;
+	protected final ModelPart root;
+	protected final ModelPart head;
+	protected final ModelPart torso;
+	protected final ModelPart scapula;
+	protected final ModelPart armLeft;
+	protected final ModelPart armRight;
+	protected final ModelPart pelvis;
+	protected final ModelPart legLeft;
+	protected final ModelPart legRight;
+	protected final ModelPart itemLeftHand;
+	protected final ModelPart itemRightHand;
 
 	public AbstractElementalModel(ModelPart root) {
 		this.root = root;
@@ -38,6 +42,8 @@ public class AbstractElementalModel<T extends AbstractElemental> extends EntityM
 		this.pelvis = root.getChild("pelvis");
 		this.legLeft = pelvis.getChild("legLeft");
 		this.legRight = pelvis.getChild("legRight");
+		this.itemLeftHand = armLeft.getChild("itemLeftHand");
+		this.itemRightHand = armRight.getChild("itemRightHand");
 	}
 
 	@Override
@@ -51,6 +57,8 @@ public class AbstractElementalModel<T extends AbstractElemental> extends EntityM
 		this.armRight.resetPose();
 		this.legLeft.resetPose();
 		this.legRight.resetPose();
+		this.itemLeftHand.resetPose();
+		this.itemRightHand.resetPose();
 		this.animHead(netHeadYaw, headPitch);
 		Vector3f vec3f =  new Vector3f(Mth.cos(limbSwing * 0.662f * RotateParameters.LIMB_SWING_WEIGHT / entity.getScale()) * limbSwingAmount, 0.0f, 0.0f);
 		this.poseArms(entity, vec3f);
@@ -118,6 +126,17 @@ public class AbstractElementalModel<T extends AbstractElemental> extends EntityM
 	@Override
 	public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
 		root.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+	}
+
+	@Override
+	public void translateToHand(HumanoidArm pSide, PoseStack pPoseStack) {
+		ModelPart arm = pSide.equals(HumanoidArm.LEFT) ? armLeft : armRight;
+		ModelPart hand = pSide.equals(HumanoidArm.LEFT) ? itemLeftHand : itemRightHand;
+		root.translateAndRotate(pPoseStack);
+		torso.translateAndRotate(pPoseStack);
+		scapula.translateAndRotate(pPoseStack);
+		arm.translateAndRotate(pPoseStack);
+		hand.translateAndRotate(pPoseStack);
 	}
 
 }

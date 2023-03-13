@@ -1,4 +1,4 @@
-package skytheory.mystique.entity.ai.sensor;
+package skytheory.mystique.entity.ai.sensor.core;
 
 import java.util.Comparator;
 import java.util.Optional;
@@ -10,15 +10,17 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
-import net.minecraft.world.entity.ai.sensing.Sensor;
 import net.minecraft.world.entity.ai.targeting.TargetingConditions;
 import net.minecraft.world.entity.player.Player;
 import skytheory.mystique.entity.AbstractElemental;
+import skytheory.mystique.entity.ai.sensor.util.ContractSensorBase;
+import skytheory.mystique.init.MystiqueContracts;
+import skytheory.mystique.item.MystiqueContract;
 
-public class ElementalTemptingSensor extends Sensor<AbstractElemental> {
+public class IdleTemptingSensor extends ContractSensorBase {
 
-	protected void doTick(ServerLevel pLevel, AbstractElemental pEntity) {
-		Brain<?> brain = pEntity.getBrain();
+	@Override
+	protected void doTickContract(ServerLevel pLevel, AbstractElemental pEntity, Brain<?> pBrain) {
 		Optional<ServerPlayer> playerOpt = pLevel.players().stream()
 				.filter(EntitySelector.NO_SPECTATORS)
 				.filter(player -> pEntity.closerThan(player, 10.0d))
@@ -27,10 +29,7 @@ public class ElementalTemptingSensor extends Sensor<AbstractElemental> {
 				.filter(this.playerHasTemptationItem(pEntity))
 				.sorted(Comparator.comparingDouble(pEntity::distanceToSqr))
 				.findFirst();
-		playerOpt.ifPresentOrElse(
-				player -> brain.setMemory(MemoryModuleType.TEMPTING_PLAYER, player),
-				() -> brain.eraseMemory(MemoryModuleType.TEMPTING_PLAYER)
-				);
+		pBrain.setMemory(MemoryModuleType.TEMPTING_PLAYER, playerOpt.orElse(null));
 	}
 	
 	protected Predicate<Player> playerTargetable(AbstractElemental entity) {
@@ -48,4 +47,11 @@ public class ElementalTemptingSensor extends Sensor<AbstractElemental> {
 	public Set<MemoryModuleType<?>> requires() {
 		return Set.of(MemoryModuleType.TEMPTING_PLAYER);
 	}
+
+	@Override
+	protected MystiqueContract getContract() {
+		return MystiqueContracts.DEFAULT;
+	}
+
+	
 }

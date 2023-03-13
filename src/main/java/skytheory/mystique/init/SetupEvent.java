@@ -7,9 +7,9 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.sensing.SensorType;
 import net.minecraft.world.entity.schedule.Activity;
-import net.minecraft.world.entity.schedule.Schedule;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -53,7 +53,6 @@ import skytheory.mystique.data.ItemModelGenerator;
 import skytheory.mystique.data.LanguageProviderEN;
 import skytheory.mystique.data.PreferenceProvider;
 import skytheory.mystique.item.MystiqueContract;
-import skytheory.mystique.network.MystiqueNetwork;
 import skytheory.mystique.util.ElementalUtils;
 
 public class SetupEvent {
@@ -62,7 +61,7 @@ public class SetupEvent {
 	public static void newRegistry(NewRegistryEvent event) {
 		RegistryBuilder<MystiqueContract> builder = new RegistryBuilder<>();
 		builder.setName(MystiqueContract.REGISTRY_LOCATION);
-		builder.setDefaultKey(new ResourceLocation(Mystique.MODID, "empty"));
+		builder.setDefaultKey(new ResourceLocation(Mystique.MODID, "default"));
 		builder.disableOverrides();
 		builder.disableSync();
 		builder.onAdd(ElementalAIRegistry::onAdd);
@@ -75,18 +74,17 @@ public class SetupEvent {
 		ResourceRegister.registerAll(event, Block.class, ForgeRegistries.Keys.BLOCKS, MystiqueBlocks.class);
 		ResourceRegister.registerAll(event, BlockEntityType.class, ForgeRegistries.Keys.BLOCK_ENTITY_TYPES, MystiqueBlockEntities.class);
 		ResourceRegister.registerAll(event, EntityType.class, ForgeRegistries.Keys.ENTITY_TYPES, MystiqueEntityTypes.class);
-		ResourceRegister.registerAll(event, Activity.class, ForgeRegistries.Keys.ACTIVITIES, MystiqueEntityActivities.class);
-		ResourceRegister.registerAll(event, Schedule.class, ForgeRegistries.Keys.SCHEDULES, MystiqueEntitySchedules.class);
-		ResourceRegister.registerAll(event, SensorType.class, ForgeRegistries.Keys.SENSOR_TYPES, MystiqueEntitySensors.class);
+		ResourceRegister.registerAll(event, Activity.class, ForgeRegistries.Keys.ACTIVITIES, MystiqueActivities.class);
+		ResourceRegister.registerAll(event, SensorType.class, ForgeRegistries.Keys.SENSOR_TYPES, MystiqueSensorTypes.class);
+		ResourceRegister.registerAll(event, MemoryModuleType.class, ForgeRegistries.Keys.MEMORY_MODULE_TYPES, MystiqueMemoryModuleTypes.class);
 		ResourceRegister.registerAll(event, MenuType.class, ForgeRegistries.Keys.MENU_TYPES, MystiqueMenuTypes.class);
 		ResourceRegister.registerAll(event, RecipeType.class, ForgeRegistries.Keys.RECIPE_TYPES, MystiqueRecipeTypes.class);
 		ResourceRegister.registerAll(event, RecipeSerializer.class, ForgeRegistries.Keys.RECIPE_SERIALIZERS, MystiqueRecipeSerializers.class);
-		ResourceRegister.registerAll(event, MystiqueContract.class, MystiqueRegistries.Keys.CONTRACTS, MystiqueEntityContracts.class);
+		ResourceRegister.registerAll(event, MystiqueContract.class, MystiqueRegistries.Keys.CONTRACTS, MystiqueContracts.class);
 	}
 
 	@SubscribeEvent
 	public static void modConstruct(FMLConstructModEvent event) {
-		MystiqueNetwork.setup();
 	}
 
 	@SubscribeEvent

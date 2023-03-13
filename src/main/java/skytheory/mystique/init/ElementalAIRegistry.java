@@ -28,6 +28,13 @@ public class ElementalAIRegistry {
 	public static Logger LOGGER = LogUtils.getLogger();
 
 	private static final Set<MemoryModuleType<?>> DEFAULT_MEMORY_TYPES = ImmutableSet.of(
+			MemoryModuleType.NEAREST_LIVING_ENTITIES,
+			MemoryModuleType.NEAREST_VISIBLE_LIVING_ENTITIES,
+			MemoryModuleType.NEAREST_PLAYERS,
+			MemoryModuleType.NEAREST_VISIBLE_PLAYER,
+			MemoryModuleType.NEAREST_VISIBLE_ATTACKABLE_PLAYER,
+			MemoryModuleType.HURT_BY,
+			MemoryModuleType.HURT_BY_ENTITY,
 			MemoryModuleType.LOOK_TARGET,
 			MemoryModuleType.WALK_TARGET,
 			MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE,
@@ -35,15 +42,13 @@ public class ElementalAIRegistry {
 			MemoryModuleType.NEAREST_HOSTILE,
 			MemoryModuleType.TEMPTING_PLAYER,
 			MemoryModuleType.IS_TEMPTED,
-			MemoryModuleType.IS_PANICKING);
+			MemoryModuleType.IS_PANICKING,
+			MystiqueMemoryModuleTypes.CONTRACT);
 
 	private static final Set<SensorType<? extends Sensor<? super AbstractElemental>>> DEFAULT_SENSOR_TYPES = ImmutableSet.of(
 			SensorType.NEAREST_LIVING_ENTITIES,
 			SensorType.NEAREST_PLAYERS,
-			SensorType.NEAREST_ITEMS,
-			SensorType.HURT_BY,
-			MystiqueEntitySensors.TEMPTING,
-			MystiqueEntitySensors.HOSTILES);
+			SensorType.HURT_BY);
 
 	private static final Set<MemoryModuleType<?>> ADDITIONAL_MEMORY_TYPES = new HashSet<>();
 	private static final Set<SensorType<? extends Sensor<? super AbstractElemental>>> ADDITIONAL_SENSOR_TYPES = new HashSet<>();
@@ -65,7 +70,8 @@ public class ElementalAIRegistry {
 	static void onAdd(IForgeRegistryInternal<MystiqueContract> owner, RegistryManager stage, int id, ResourceKey<MystiqueContract> key, MystiqueContract obj, @Nullable MystiqueContract oldObj) {
 		if (stage == RegistryManager.FROZEN) {
 			LogUtils.getLogger().debug("Registering Mystique contract: " + key.location().toString());
-			
+			obj.getMemoryModules().forEach(ADDITIONAL_MEMORY_TYPES::add);
+			obj.getSensorTypes().forEach(ADDITIONAL_SENSOR_TYPES::add);
 		}
 	}
 

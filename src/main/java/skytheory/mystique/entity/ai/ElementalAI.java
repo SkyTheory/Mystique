@@ -6,26 +6,16 @@ import com.google.common.collect.ImmutableSet;
 import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.Brain.Provider;
 import net.minecraft.world.entity.ai.behavior.AnimalPanic;
-import net.minecraft.world.entity.ai.behavior.DoNothing;
 import net.minecraft.world.entity.ai.behavior.LookAtTargetSink;
 import net.minecraft.world.entity.ai.behavior.MoveToTargetSink;
-import net.minecraft.world.entity.ai.behavior.RandomStroll;
-import net.minecraft.world.entity.ai.behavior.SetWalkTargetAwayFrom;
-import net.minecraft.world.entity.ai.behavior.SetWalkTargetFromLookTarget;
-import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.schedule.Activity;
-import skytheory.lib.entity.ai.behavior.RunOneForEach;
-import skytheory.lib.entity.ai.behavior.RunOnePrioritized;
 import skytheory.mystique.entity.AbstractElemental;
 import skytheory.mystique.entity.ai.behavior.core.FloatFluid;
-import skytheory.mystique.entity.ai.behavior.core.FollowTemptationWithoutCooldown;
 import skytheory.mystique.entity.ai.behavior.core.UpdateElementalActivities;
-import skytheory.mystique.entity.ai.behavior.eat.EatItem;
-import skytheory.mystique.entity.ai.behavior.eat.ResetEatItem;
-import skytheory.mystique.entity.ai.behavior.interacting.FollowInteractingPlayer;
-import skytheory.mystique.entity.ai.behavior.interacting.ResetInteractingPlayer;
 import skytheory.mystique.init.ElementalAIRegistry;
-import skytheory.mystique.init.MystiqueEntityActivities;
+import skytheory.mystique.init.MystiqueContracts;
+import skytheory.mystique.init.MystiqueRegistries;
+import skytheory.mystique.item.MystiqueContract;
 
 public class ElementalAI {
 
@@ -33,54 +23,30 @@ public class ElementalAI {
 		return Brain.provider(ElementalAIRegistry.getMemoryTypes(), ElementalAIRegistry.getSensorTypes());
 	}
 
-	public static void initBrain(Brain<AbstractElemental> pBrain) {
-		//pBrain.setSchedule(MystiqueEntitySchedules.ELEMENTAL_SCHEDULE);
+	public static void initBrain(AbstractElemental pEntity, Brain<AbstractElemental> pBrain) {
 		initCoreActivity(pBrain);
-		initIdleActivity(pBrain);
-		initEatingActivity(pBrain);
-		initInteractingActivity(pBrain);
+		initContractActivities(pBrain);
 		pBrain.setCoreActivities(ImmutableSet.of(Activity.CORE));
-		pBrain.setDefaultActivity(Activity.IDLE);
-		pBrain.useDefaultActivity();
+		pBrain.setDefaultActivity(MystiqueContracts.DEFAULT.getActivity());
+		pBrain.setActiveActivityIfPossible(Activity.CORE);
+	}
+
+	private static void initContractActivities(Brain<AbstractElemental> pBrain) {
+		MystiqueRegistries.CONTRACTS.getValues().stream().forEach(contract -> registerContractActions(pBrain, contract));
 	}
 
 	private static void initCoreActivity(Brain<AbstractElemental> brain) {
 		brain.addActivity(Activity.CORE, 0, ImmutableList.of(
 				new FloatFluid(),
+				new UpdateElementalActivities(),
 				new AnimalPanic(2.0f),
 				new LookAtTargetSink(45, 90),
-				new MoveToTargetSink(),
-				new UpdateElementalActivities()
-				//UpdateActivityFromSchedule.create()
+				new MoveToTargetSink()
 				));
 	}
 
-	private static void initIdleActivity(Brain<AbstractElemental> brain) {
-		brain.addActivity(Activity.IDLE, 0, ImmutableList.of(
-				new RunOnePrioritized<AbstractElemental>()
-				.addBehavior(SetWalkTargetAwayFrom.entity(MemoryModuleType.NEAREST_HOSTILE, 1.0f, 6, false))
-				.addBehavior(new FollowTemptationWithoutCooldown(1.25f))
-				.addBehavior(
-						new RunOneForEach<AbstractElemental>()
-						.addBehavior(RandomStroll.stroll(1.0f))
-						.addBehavior(SetWalkTargetFromLookTarget.create(1.0f, 3))
-						.addBehavior(new DoNothing(60, 120))
-						)
-				));
-	}
-
-	private static void initEatingActivity(Brain<AbstractElemental> brain) {
-		brain.addActivity(MystiqueEntityActivities.EAT, 0, ImmutableList.of(
-				new EatItem(),
-				new ResetEatItem()
-				));
-	}
-
-	private static void initInteractingActivity(Brain<AbstractElemental> brain) {
-		brain.addActivity(MystiqueEntityActivities.INTERACTING, 0, ImmutableList.of(
-				new FollowInteractingPlayer(1.0f),
-				new ResetInteractingPlayer()
-				));
+	private static void registerContractActions(Brain<AbstractElemental> brain, MystiqueContract contract) {
+		brain.addActivity(contract.getActivity(), 0, ImmutableList.copyOf(contract.getActions()));
 	}
 
 }

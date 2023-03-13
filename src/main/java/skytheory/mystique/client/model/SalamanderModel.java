@@ -63,20 +63,24 @@ public class SalamanderModel extends AbstractElementalModel<Salamander> {
 
 		torso.addOrReplaceChild("cloth", CubeListBuilder.create().texOffs(32, 50).addBox(-4.0F, -1.0F, -3.8F, 8.0F, 7.0F, 7.0F, new CubeDeformation(-0.8F))
 		.texOffs(26, 45).addBox(-3.0F, 1.9F, -2.9F, 6.0F, 3.0F, 1.0F, new CubeDeformation(-0.05F))
-		.texOffs(0, 49).addBox(-4.5F, 6.0F, -3.5F, 9.0F, 8.0F, 7.0F, new CubeDeformation(-1.0F))
+		.texOffs(0, 49).addBox(-4.5F, 5.9F, -3.5F, 9.0F, 8.0F, 7.0F, new CubeDeformation(-1.1F))
 		.texOffs(44, 7).addBox(-3.0F, 0.0F, -2.0F, 6.0F, 9.0F, 4.0F, new CubeDeformation(0.05F)), PartPose.offset(0.0F, 0.0F, 0.0F));
 
 		torso.addOrReplaceChild("inner", CubeListBuilder.create().texOffs(44, 20).addBox(-3.0F, 0.0F, -2.0F, 6.0F, 9.0F, 4.0F, new CubeDeformation(0.1F)), PartPose.offset(0.0F, 0.0F, 0.0F));
 
 		PartDefinition scapula = torso.addOrReplaceChild("scapula", CubeListBuilder.create(), PartPose.offset(0.0F, 1.5F, 0.0F));
 
-		scapula.addOrReplaceChild("armLeft", CubeListBuilder.create().texOffs(40, 0).addBox(-0.1F, -1.0F, -1.0F, 2.0F, 9.0F, 2.0F, new CubeDeformation(-0.2F))
+		PartDefinition armLeft = scapula.addOrReplaceChild("armLeft", CubeListBuilder.create().texOffs(40, 0).addBox(-0.1F, -1.0F, -1.0F, 2.0F, 9.0F, 2.0F, new CubeDeformation(-0.2F))
 		.texOffs(0, 32).mirror().addBox(-0.6F, 0.5F, -1.5F, 3.0F, 2.0F, 3.0F, new CubeDeformation(-0.5F)).mirror(false)
-		.texOffs(56, 53).mirror().addBox(-0.1F, 5.0F, -1.0F, 2.0F, 2.0F, 2.0F, new CubeDeformation(-0.1F)).mirror(false), PartPose.offsetAndRotation(3.0F, 0.0F, -1.0F, 0.0F, 0.0F, -0.1745F));
+		.texOffs(56, 53).mirror().addBox(-0.1F, 5.0F, -1.0F, 2.0F, 2.0F, 2.0F, new CubeDeformation(-0.1F)).mirror(false), PartPose.offsetAndRotation(3.0F, 0.0F, 0.0F, 0.0F, 0.0F, -0.1745F));
 
-		scapula.addOrReplaceChild("armRight", CubeListBuilder.create().texOffs(32, 0).addBox(-1.9F, -1.0F, -1.0F, 2.0F, 9.0F, 2.0F, new CubeDeformation(-0.2F))
+		armLeft.addOrReplaceChild("itemLeftHand", CubeListBuilder.create(), PartPose.offset(1.0F, 7.8F, -0.8F));
+
+		PartDefinition armRight = scapula.addOrReplaceChild("armRight", CubeListBuilder.create().texOffs(32, 0).addBox(-1.9F, -1.0F, -1.0F, 2.0F, 9.0F, 2.0F, new CubeDeformation(-0.2F))
 		.texOffs(0, 32).addBox(-2.4F, 0.5F, -1.5F, 3.0F, 2.0F, 3.0F, new CubeDeformation(-0.5F))
-		.texOffs(56, 53).addBox(-1.9F, 5.0F, -1.0F, 2.0F, 2.0F, 2.0F, new CubeDeformation(-0.1F)), PartPose.offsetAndRotation(-3.0F, 0.0F, -1.0F, 0.0F, 0.0F, 0.1745F));
+		.texOffs(56, 53).addBox(-1.9F, 5.0F, -1.0F, 2.0F, 2.0F, 2.0F, new CubeDeformation(-0.1F)), PartPose.offsetAndRotation(-3.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.1745F));
+
+		armRight.addOrReplaceChild("itemRightHand", CubeListBuilder.create(), PartPose.offset(-1.0F, 7.8F, -0.8F));
 
 		PartDefinition pelvis = partdefinition.addOrReplaceChild("pelvis", CubeListBuilder.create(), PartPose.offset(0.0F, 17.0F, 0.0F));
 

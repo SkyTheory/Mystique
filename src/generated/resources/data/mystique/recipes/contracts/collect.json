@@ -1,6 +1,6 @@
 {
   "type": "mystique:contract",
-  "contract": "mystique:empty",
+  "contract": "mystique:collect",
   "item": {
     "item": "mystique:contract_document"
   }

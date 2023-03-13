@@ -14,7 +14,7 @@ public abstract class AbstractElementalRenderer<T extends AbstractElemental, M e
 
 	public AbstractElementalRenderer(EntityRendererProvider.Context ctx, M model) {
 		super(ctx, model, SHADOW);
-		this.addLayer(new ElementalItemLayer<>(this, ctx.getItemRenderer()));
+		this.addLayer(new ElementalItemLayer<>(this, ctx.getItemInHandRenderer()));
 	}
 	
 	@Override

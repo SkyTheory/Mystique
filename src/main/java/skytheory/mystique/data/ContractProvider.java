@@ -12,7 +12,7 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import skytheory.mystique.Mystique;
-import skytheory.mystique.init.MystiqueEntityContracts;
+import skytheory.mystique.init.MystiqueContracts;
 import skytheory.mystique.init.MystiqueItems;
 import skytheory.mystique.recipe.ContractRecipe;
 
@@ -39,17 +39,15 @@ public class ContractProvider implements DataProvider {
 				list.add(DataProvider.saveStable(pOutput, recipe.serializeRecipe(), pathProvider.json(recipe.getId())));
 			}
 		});
-		return CompletableFuture.allOf(list.toArray((i) -> {
-			return new CompletableFuture[i];
-		}));
+		return CompletableFuture.allOf(list.toArray((i) -> new CompletableFuture[i]));
 	}
 
 	protected void addRecipes() {
 		this.recipes.add(
 				new ContractRecipe(
-						new ResourceLocation(Mystique.MODID, "basic"),
+						new ResourceLocation(Mystique.MODID, "collect"),
 						MystiqueItems.CONTRACT_DOCUMENT,
-						MystiqueEntityContracts.EMPTY));
+						MystiqueContracts.COLLECT));
 	}
 
 	@Override

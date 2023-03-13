@@ -2,6 +2,8 @@ package skytheory.mystique.entity.ai.behavior.core;
 
 import java.util.Collections;
 
+import com.mojang.logging.LogUtils;
+
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.behavior.Behavior;
@@ -26,6 +28,7 @@ public class FloatFluid extends Behavior<Mob> {
 	}
 
 	protected void tick(ServerLevel pLevel, Mob pOwner, long pGameTime) {
+		LogUtils.getLogger().debug("debug");
 		FluidType fluid = pOwner.getEyeInFluidType();
 		if (fluid.isAir()) {
 			fluid = pOwner.getMaxHeightFluidType();

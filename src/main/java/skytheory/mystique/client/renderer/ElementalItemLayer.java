@@ -3,25 +3,24 @@ package skytheory.mystique.client.renderer;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 
+import net.minecraft.client.renderer.ItemInHandRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.block.model.ItemTransforms;
-import net.minecraft.client.renderer.entity.ItemRenderer;
+import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
-import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
 import skytheory.mystique.client.model.AbstractElementalModel;
 import skytheory.mystique.entity.AbstractElemental;
 import skytheory.mystique.entity.ai.behavior.eat.EatItem;
 
 public class ElementalItemLayer<T extends AbstractElemental, M extends AbstractElementalModel<T>> extends RenderLayer<T, M> {
 
-	public final ItemRenderer itemRenderer;
+	public final ItemInHandRenderer itemInHandRenderer;
 
-	public ElementalItemLayer(RenderLayerParent<T, M> pRenderer, ItemRenderer itemRenderer) {
+	public ElementalItemLayer(RenderLayerParent<T, M> pRenderer, ItemInHandRenderer itemInHandRenderer) {
 		super(pRenderer);
-		this.itemRenderer = itemRenderer;
+		this.itemInHandRenderer = itemInHandRenderer;
 	}
 
 	@Override
@@ -30,7 +29,8 @@ public class ElementalItemLayer<T extends AbstractElemental, M extends AbstractE
 			float pHeadPitch) {
 		if (pLivingEntity.isEatingItem()) {
 			renderEatingItem(pPoseStack, pBuffer, pPackedLight, pLivingEntity);
-			return;
+		} else {
+			renderHandheldItem(pPoseStack, pBuffer, pPackedLight, pLivingEntity);
 		}
 	}
 
@@ -38,14 +38,30 @@ public class ElementalItemLayer<T extends AbstractElemental, M extends AbstractE
 		int eatingTicks = pLivingEntity.getEntityData().get(AbstractElemental.DATA_EATING_TICKS);
 		if (eatingTicks > EatItem.DURATION_EAT_BEFORE) {
 			ItemStack stack = pLivingEntity.getEatingItem();
+			HumanoidArm arm = pLivingEntity.getMainArm();
+			TransformType type = arm == HumanoidArm.LEFT ? TransformType.THIRD_PERSON_LEFT_HAND : TransformType.THIRD_PERSON_RIGHT_HAND;
 			pPoseStack.pushPose();
 			pPoseStack.translate(0.0d, 0.5d, -0.4d);
 			pPoseStack.mulPose(Axis.XP.rotationDegrees(180.0f));
-			Level level = pLivingEntity.getLevel();
-			boolean leftHand = false;
-			int id = pLivingEntity.getId();
-			this.itemRenderer.renderStatic(pLivingEntity, stack, ItemTransforms.TransformType.GROUND, leftHand, pPoseStack, pBuffer, level, pPackedLight, OverlayTexture.NO_OVERLAY, id);
+			this.itemInHandRenderer.renderItem(pLivingEntity, stack, type, arm == HumanoidArm.LEFT, pPoseStack, pBuffer, pPackedLight);
 			pPoseStack.popPose();
+		}
+	}
+
+	protected void renderHandheldItem(PoseStack pPoseStack, MultiBufferSource pBuffer, int pPackedLight, T pLivingEntity) {
+		ItemStack stack = pLivingEntity.getMainHandItem();
+		if (!stack.isEmpty()) {
+			HumanoidArm arm = pLivingEntity.getMainArm();
+			TransformType type = arm == HumanoidArm.LEFT ? TransformType.THIRD_PERSON_LEFT_HAND : TransformType.THIRD_PERSON_RIGHT_HAND;
+			float scale = (1.0f + pLivingEntity.getScale()) / 2.0f;
+			pPoseStack.pushPose();
+			this.getParentModel().translateToHand(arm, pPoseStack);
+			pPoseStack.mulPose(Axis.XP.rotationDegrees(-90.0F));
+			pPoseStack.mulPose(Axis.YP.rotationDegrees(180.0F));
+			pPoseStack.scale(scale, scale, scale);
+			this.itemInHandRenderer.renderItem(pLivingEntity, stack, type, arm == HumanoidArm.LEFT, pPoseStack, pBuffer, pPackedLight);
+			pPoseStack.popPose();
+
 		}
 	}
 

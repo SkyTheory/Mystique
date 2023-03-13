@@ -4,24 +4,30 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import skytheory.mystique.Mystique;
 import skytheory.mystique.container.ElementalContainerMenu;
+import skytheory.mystique.entity.AbstractElemental;
 
 public class ElementalContainerScreen extends AbstractContainerScreen<ElementalContainerMenu> {
 
 	private static final ResourceLocation BACKGROUND = new ResourceLocation(Mystique.MODID, "textures/gui/gui_mainframe.png");
 
 	public ElementalContainerMenu menu;
+	private final AbstractElemental entity;
+	private float mouseX;
+	private float mouseY;
 
 	public ElementalContainerScreen(ElementalContainerMenu menu, Inventory playerInv, Component component) {
 		super(menu, playerInv, component);
 		// デフォルト値だが、明示的に宣言しておけばコードを見返したときに理解しやすい
 		this.imageWidth = 176;
 		this.imageHeight = 166;
+		this.entity = menu.entity;
 	}
 
 	@Override
@@ -33,7 +39,10 @@ public class ElementalContainerScreen extends AbstractContainerScreen<ElementalC
 	/**
 	 * 背景を描画し、内容を描画し、マウスオーバー時の説明を描画する
 	 */
+	@Override
 	public void render(PoseStack poseStack, int x, int y, float ticks) {
+		this.mouseX = x;
+		this.mouseY = y;
 		this.renderBackground(poseStack);
 		super.render(poseStack, x, y, ticks);
 		this.renderTooltip(poseStack, x, y);
@@ -50,6 +59,13 @@ public class ElementalContainerScreen extends AbstractContainerScreen<ElementalC
 		int fixedX = (this.width - this.imageWidth) / 2;
 		int fixedY = (this.height - this.imageHeight) / 2;
 		this.blit(poseStack, fixedX, fixedY, 0, 0, this.imageWidth, this.imageHeight);
+		int i = (this.width - this.imageWidth) / 2;
+		int j = (this.height - this.imageHeight) / 2;
+		int guiX = 37;
+		int guiY = 62;
+		int mouseYRev = -32;
+		int scale = (int) (24.0f / entity.getScale());
+		InventoryScreen.renderEntityInInventory(i + guiX, j + guiY, scale, (float)(i + guiX) - this.mouseX, (float)(j + guiY) - this.mouseY + mouseYRev, this.entity);
 	}
 
 }

@@ -1,9 +1,9 @@
-// 1.19.3	2023-03-04T05:49:54.8976289	Tags for minecraft:block mod id mystique
+// 1.19.3	2023-03-12T03:29:59.3455919	Tags for minecraft:block mod id mystique
 cac7d83ead165f74a82b685dca4120e742e31120 data/forge/tags/blocks/ores.json
-0348faa175b05fd8f2c24b31744b397f1cc5332d data/forge/tags/blocks/ores/mystique_air.json
-4b4371087b33d96eced0fb9183c3e1674e1d7fbb data/forge/tags/blocks/ores/mystique_earth.json
-6703a47963794a1d25ddfbc75b3593f98da01b43 data/forge/tags/blocks/ores/mystique_fire.json
-694987e4bf5bbc33378b81744ae854fde7524ff1 data/forge/tags/blocks/ores/mystique_water.json
+0348faa175b05fd8f2c24b31744b397f1cc5332d data/forge/tags/blocks/ores/mystique_element_air.json
+4b4371087b33d96eced0fb9183c3e1674e1d7fbb data/forge/tags/blocks/ores/mystique_element_earth.json
+6703a47963794a1d25ddfbc75b3593f98da01b43 data/forge/tags/blocks/ores/mystique_element_fire.json
+694987e4bf5bbc33378b81744ae854fde7524ff1 data/forge/tags/blocks/ores/mystique_element_water.json
 647d19dab528477cb376302d48b047e0775c2a12 data/forge/tags/blocks/ores_in_ground/deepslate.json
 f1cc32f716986fcc12f4a5f61e1e03482130e284 data/forge/tags/blocks/ores_in_ground/stone.json
 261b7bec566265e1d671ce57edfa5b0c9bb59a9b data/minecraft/tags/blocks/mineable/pickaxe.json

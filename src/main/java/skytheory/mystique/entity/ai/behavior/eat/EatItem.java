@@ -1,7 +1,6 @@
 package skytheory.mystique.entity.ai.behavior.eat;
 
 import java.util.Collections;
-import java.util.Optional;
 
 import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
@@ -9,7 +8,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.ai.behavior.Behavior;
-import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 import skytheory.lib.util.FloatUtils;
@@ -28,25 +26,19 @@ public class EatItem extends Behavior<AbstractElemental> {
 	
 	@Override
 	protected boolean checkExtraStartConditions(ServerLevel pLevel, AbstractElemental pOwner) {
-		if (pOwner.getBrain().hasMemoryValue(MemoryModuleType.IS_PANICKING)) return false;
 		ItemStack stack = pOwner.getEatingItem();
-		Optional<PreferenceRecipe> recipeOpt = PreferenceRecipe.getRecipe(pOwner, stack);
-		if (recipeOpt.isPresent()) {
-			return true;
-		}
-		return false;
+		return PreferenceRecipe.getRecipe(pOwner, stack).isPresent();
 	}
 	
 	@Override
 	protected boolean canStillUse(ServerLevel pLevel, AbstractElemental pEntity, long pGameTime) {
-		if (!checkExtraStartConditions(pLevel, pEntity)) return false;
-		return pEntity.isEatingItem();
+		return checkExtraStartConditions(pLevel, pEntity);
 	}
 	
 	@Override
 	protected void start(ServerLevel pLevel, AbstractElemental pEntity, long pGameTime) {
-		pEntity.getNavigation().stop();
 		pEntity.getEntityData().set(AbstractElemental.DATA_IS_EATING, true);
+		pEntity.getNavigation().stop();
 	}
 	
 	@Override

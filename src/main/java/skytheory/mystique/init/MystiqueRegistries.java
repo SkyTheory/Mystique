@@ -8,7 +8,7 @@ import skytheory.mystique.item.MystiqueContract;
 
 public class MystiqueRegistries {
 
-	public static IForgeRegistry<MystiqueContract> CONTRACTS = RegistryManager.ACTIVE.getRegistry(Keys.CONTRACTS);;
+	public static IForgeRegistry<MystiqueContract> CONTRACTS = RegistryManager.ACTIVE.getRegistry(Keys.CONTRACTS);
 
     public static final class Keys {
     	public static final ResourceKey<Registry<MystiqueContract>> CONTRACTS = ResourceKey.createRegistryKey(MystiqueContract.REGISTRY_LOCATION);

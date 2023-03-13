@@ -1,5 +1,6 @@
 package skytheory.mystique.entity;
 
+import java.util.Comparator;
 import java.util.Optional;
 
 import com.mojang.serialization.Dynamic;
@@ -22,6 +23,7 @@ import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -30,15 +32,19 @@ import net.minecraft.world.level.LevelReader;
 import net.minecraftforge.entity.IEntityAdditionalSpawnData;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.network.NetworkHooks;
-import net.minecraftforge.network.PacketDistributor;
 import skytheory.lib.block.DataSync;
-import skytheory.lib.capability.itemhandler.ItemHandler;
+import skytheory.lib.capability.itemhandler.InventoryHandler;
 import skytheory.lib.capability.itemhandler.ItemHandlerListener;
 import skytheory.lib.network.EntityMessage;
 import skytheory.lib.network.SkyTheoryLibNetwork;
+import skytheory.lib.util.ItemHandlerStream;
+import skytheory.lib.util.ItemHandlerStream.ItemHandlerSlot;
 import skytheory.lib.util.ItemHandlerUtils;
 import skytheory.mystique.container.ElementalContainerMenu;
 import skytheory.mystique.entity.ai.ElementalAI;
+import skytheory.mystique.init.MystiqueContracts;
+import skytheory.mystique.init.MystiqueRegistries;
+import skytheory.mystique.item.MystiqueContract;
 import skytheory.mystique.recipe.PreferenceRecipe;
 
 public class AbstractElemental extends PathfinderMob implements MenuProvider, DataSync, ItemHandlerListener, IEntityAdditionalSpawnData {
@@ -50,17 +56,22 @@ public class AbstractElemental extends PathfinderMob implements MenuProvider, Da
 
 	public static final int SLOT_CONTRACT = 0;
 	public static final int SLOT_FOOD = 1;
+	public static final int FILTER_SLOTS = 5;
 
 	public static final EntityDataAccessor<Boolean> DATA_IS_EATING = SynchedEntityData.defineId(AbstractElemental.class, EntityDataSerializers.BOOLEAN);
 	public static final EntityDataAccessor<Integer> DATA_EATING_TICKS = SynchedEntityData.defineId(AbstractElemental.class, EntityDataSerializers.INT);
 
-	public ItemHandler itemHandler;
-	public Player interactingPlayer;
+	private InventoryHandler itemHandler;
+	private InventoryHandler filters;
+	private Player interactingPlayer;
 
 	protected AbstractElemental(EntityType<? extends AbstractElemental> p_21368_, Level p_21369_) {
 		super(p_21368_, p_21369_);
-		this.itemHandler = new ItemHandler(2);
+		this.itemHandler = new InventoryHandler(2);
 		this.itemHandler.addListener(this);
+		this.filters = new InventoryHandler(FILTER_SLOTS);
+		this.filters.addListener(this);
+		this.setPersistenceRequired();
 	}
 
 	protected Brain.Provider<AbstractElemental> brainProvider() {
@@ -69,9 +80,7 @@ public class AbstractElemental extends PathfinderMob implements MenuProvider, Da
 
 	protected Brain<?> makeBrain(Dynamic<?> pDynamic) {
 		Brain<AbstractElemental> brain = (this.brainProvider().makeBrain(pDynamic));
-		if (!this.level.isClientSide) {
-			ElementalAI.initBrain(brain);
-		}
+		ElementalAI.initBrain(this, brain);
 		return brain;
 	}
 
@@ -88,7 +97,6 @@ public class AbstractElemental extends PathfinderMob implements MenuProvider, Da
 
 	protected void customServerAiStep() {
 		this.getBrain().tick((ServerLevel)this.level, this);
-		super.customServerAiStep();
 	}
 
 	@Override
@@ -100,17 +108,17 @@ public class AbstractElemental extends PathfinderMob implements MenuProvider, Da
 
 	@Override
 	public void addAdditionalSaveData(CompoundTag pCompound) {
-		pCompound.putBoolean("Eating", this.entityData.get(DATA_IS_EATING));
 		pCompound.putInt("EatingTicks", this.entityData.get(DATA_EATING_TICKS));
 		pCompound.put("ElementalItems", this.itemHandler.serializeNBT());
+		pCompound.put("ItemFilters", this.filters.serializeNBT());
 		super.addAdditionalSaveData(pCompound);
 	}
 
 	@Override
 	public void readAdditionalSaveData(CompoundTag pCompound) {
-		this.entityData.set(DATA_IS_EATING, pCompound.getBoolean("Eating"));
 		this.entityData.set(DATA_EATING_TICKS, pCompound.getInt("EatingTicks"));
 		this.itemHandler.deserializeNBT(pCompound.getCompound("ElementalItems"));
+		this.filters.deserializeNBT(pCompound.getCompound("ItemFilters"));
 		super.readAdditionalSaveData(pCompound);
 	}
 
@@ -140,14 +148,6 @@ public class AbstractElemental extends PathfinderMob implements MenuProvider, Da
 	}
 
 	/**
-	 * 距離が離れたことによる自然デスポーンを無効化
-	 */
-	@Override
-	public boolean isPersistenceRequired() {
-		return true;
-	}
-
-	/**
 	 * 正の走光性を持つように指定
 	 */
 	public float getWalkTargetValue(BlockPos pPos, LevelReader pLevel) {
@@ -160,30 +160,45 @@ public class AbstractElemental extends PathfinderMob implements MenuProvider, Da
 
 	@Override
 	protected InteractionResult mobInteract(Player pPlayer, InteractionHand pHand) {
-		if (pHand == InteractionHand.MAIN_HAND) {
-			ItemStack stack = pPlayer.getItemInHand(InteractionHand.MAIN_HAND).copy();
-			Optional<PreferenceRecipe> recipe = PreferenceRecipe.getRecipe(this, stack);
-			if (recipe.isPresent() && this.itemHandler.getStackInSlot(SLOT_FOOD).isEmpty()) {
-				setEatingItem(stack.split(1));
-				if (!pPlayer.isCreative()) {
-					if (stack.isEmpty()) stack = ItemStack.EMPTY;
-					pPlayer.setItemInHand(InteractionHand.MAIN_HAND, stack);
-				}
-				return InteractionResult.CONSUME;
-			}
-			if (pPlayer instanceof ServerPlayer serverPlayer) {
-				NetworkHooks.openScreen(serverPlayer, this, buf -> buf.writeInt(this.getId()));
-				this.setInteractingPlayer(serverPlayer);
+		if (!this.level.isClientSide() && pPlayer instanceof ServerPlayer serverPlayer) {
+			if (pHand == InteractionHand.MAIN_HAND) {
+				// Contractの右クリック処理
+				InteractionResult contractInteractionResult = this.getContract().interaction(this, pPlayer);
+				if (contractInteractionResult.consumesAction()) return contractInteractionResult;
+				// 食べ物アイテムを与える処理
+				InteractionResult feedingInteractionResult = this.feeding(pPlayer);
+				if (feedingInteractionResult.consumesAction()) return feedingInteractionResult;
+				// GUIを開く
+				this.openGUI(serverPlayer);
 				return InteractionResult.CONSUME;
 			}
 		}
 		return super.mobInteract(pPlayer, pHand);
 	}
 
+	public InteractionResult feeding(Player pPlayer) {
+		ItemStack stack = pPlayer.getItemInHand(InteractionHand.MAIN_HAND).copy();
+		Optional<PreferenceRecipe> recipe = PreferenceRecipe.getRecipe(this, stack);
+		if (recipe.isPresent() && this.itemHandler.getStackInSlot(SLOT_FOOD).isEmpty()) {
+			setEatingItem(stack.split(1));
+			if (!pPlayer.isCreative()) {
+				if (stack.isEmpty()) stack = ItemStack.EMPTY;
+				pPlayer.setItemInHand(InteractionHand.MAIN_HAND, stack);
+			}
+			return InteractionResult.CONSUME;
+		}
+		return InteractionResult.PASS;
+	}
+
+	public void openGUI(ServerPlayer pPlayer) {
+		NetworkHooks.openScreen(pPlayer, this, buf -> buf.writeInt(this.getId()));
+		this.setInteractingPlayer(pPlayer);
+	}
+
 	/*
 	 * GUI関連
 	 */
-	
+
 	@Override
 	public ElementalContainerMenu createMenu(int pContainerId, Inventory pPlayerInventory, Player pPlayer) {
 		return new ElementalContainerMenu(pContainerId, pPlayerInventory, pPlayer, this);
@@ -192,47 +207,42 @@ public class AbstractElemental extends PathfinderMob implements MenuProvider, Da
 	public void setInteractingPlayer(Player player) {
 		this.interactingPlayer = player;
 	}
-	
+
 	public void resetInteractingPlayer() {
 		setInteractingPlayer(null);
 	}
-	
+
 	public Player getInteractingPlayer() {
 		return interactingPlayer;
 	}
-	
+
 	public boolean isInteractingByPlayer() {
 		return interactingPlayer != null;
 	}
-	
+
 	/*
 	 * Tick関連
 	 */
 
 	@Override
 	public void tick() {
+		if (!this.level.isClientSide()) {
+//			LogUtils.getLogger().debug(MystiqueRegistries.CONTRACTS.getKey(getContract()).toString());
+		}
 		super.tick();
 	}
+
+	/*
+	 * AI関連
+	 */
 
 	public boolean canBeTempted() {
 		return !this.isEatingItem();
 	}
 
-	public ItemStack getContractItem() {
-		return this.itemHandler.getStackInSlot(SLOT_CONTRACT);
-	}
-
-	public void setContractItem(ItemStack stack) {
-		this.itemHandler.setStackInSlot(SLOT_CONTRACT, stack);
-	}
-
 	public boolean isTemptingItem(ItemStack stack) {
 		Optional<PreferenceRecipe> recipe = PreferenceRecipe.getRecipe(this, stack);
 		return recipe.isPresent();
-	}
-
-	public ItemStack getEatingItem() {
-		return this.itemHandler.getStackInSlot(SLOT_FOOD);
 	}
 
 	public void setEatingItem(ItemStack stack) {
@@ -243,26 +253,78 @@ public class AbstractElemental extends PathfinderMob implements MenuProvider, Da
 		return this.entityData.get(DATA_IS_EATING);
 	}
 
+	public ItemStack getEatingItem() {
+		return this.itemHandler.getStackInSlot(SLOT_FOOD);
+	}
+
+	protected void pickUpItem(ItemEntity pItemEntity) {
+	}
+
+	public boolean isValidItem(ItemStack stack) {
+		if (ItemHandlerUtils.isEmpty(filters)) return true;
+		return ItemHandlerStream.create(filters).map(ItemHandlerSlot::getStackInSlot).anyMatch(stack::sameItem);
+	}
+
+	/*
+	 * Contract関連
+	 */
+
+	public ItemStack getContractItem() {
+		return this.itemHandler.getStackInSlot(SLOT_CONTRACT);
+	}
+
+	public void setContractItem(ItemStack stack) {
+		this.itemHandler.setStackInSlot(SLOT_CONTRACT, stack);
+	}
+
+	public MystiqueContract getContract() {
+		return MystiqueRegistries.CONTRACTS.getValues().stream()
+				.sorted(Comparator.comparingInt(MystiqueContract::getPriority))
+				.filter(c -> c.canApplyContract(this))
+				.findFirst().orElse(MystiqueContracts.DEFAULT);
+	}
+
+	/*
+	 * ItemHandler関連
+	 */
+
+	public InventoryHandler getMainInventory() {
+		return this.itemHandler;
+	}
+
+	public InventoryHandler getFilterInventory() {
+		return this.filters;
+	}
+
+	/*
+	 * データ同期関連：インベントリ操作時
+	 */
+
 	public CompoundTag writeSyncTag() {
-		return this.itemHandler.serializeNBT();
+		CompoundTag tag = new CompoundTag();
+		tag.put("Items", itemHandler.serializeNBT());
+		tag.put("Filters", filters.serializeNBT());
+		return tag;
 	}
 
 	@Override
 	public void readSyncTag(CompoundTag tag) {
-		this.itemHandler.deserializeNBT(tag);
+		this.itemHandler.deserializeNBT(tag.getCompound("Items"));
+		this.filters.deserializeNBT(tag.getCompound("Filters"));
 	}
 
 	@Override
 	public void onItemHandlerChanged(IItemHandler handler, int slot) {
 		if (!this.level.isClientSide()) {
-			SkyTheoryLibNetwork.INSTANCE.send(PacketDistributor.TRACKING_ENTITY.with(() -> this), new EntityMessage(this));
+			SkyTheoryLibNetwork.sendToClient(this, new EntityMessage(this));
 		}
 	}
 
 	/*
-	 * 覚書：IEntityAdditionalSpawnDataを利用するためには、getAddEntityPacketをオーバーライドする必要がある
+	 * データ同期関連：スポーン時
 	 */
 
+	/** 覚書：IEntityAdditionalSpawnDataを利用するためには、getAddEntityPacketをオーバーライドする必要がある */
 	@Override
 	public Packet<ClientGamePacketListener> getAddEntityPacket() {
 		return NetworkHooks.getEntitySpawningPacket(this);
@@ -270,12 +332,14 @@ public class AbstractElemental extends PathfinderMob implements MenuProvider, Da
 
 	@Override
 	public void writeSpawnData(FriendlyByteBuf buffer) {
-		buffer.writeNbt(this.writeSyncTag());
+		buffer.writeNbt(this.itemHandler.serializeNBT());
+		buffer.writeNbt(this.filters.serializeNBT());
 	}
 
 	@Override
 	public void readSpawnData(FriendlyByteBuf additionalData) {
-		this.readSyncTag(additionalData.readNbt());
+		this.itemHandler.deserializeNBT(additionalData.readNbt());
+		this.filters.deserializeNBT(additionalData.readNbt());
 	}
 
 }

@@ -18,7 +18,7 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBloc
 import net.minecraftforge.items.IItemHandler;
 import skytheory.lib.block.InteractiveBlockEntityMainHand;
 import skytheory.lib.block.TickerBlockEntity;
-import skytheory.lib.capability.itemhandler.ItemHandler;
+import skytheory.lib.capability.itemhandler.InventoryHandler;
 import skytheory.lib.capability.itemhandler.ItemHandlerEntity;
 import skytheory.lib.util.ItemHandlerMode;
 import skytheory.lib.util.ItemHandlerUtils;
@@ -77,7 +77,7 @@ public class ManaInfuserEntity extends BlockEntity implements TickerBlockEntity,
 
 	@Override
 	public List<IItemHandler> createAllHandlers() {
-		this.handler = new ItemHandler(1);
+		this.handler = new InventoryHandler(1);
 		return List.of(this.handler);
 	}
 
