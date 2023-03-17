@@ -1,18 +1,19 @@
 package skytheory.mystique.entity.ai.contract;
 
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.ai.behavior.BehaviorControl;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.sensing.Sensor;
 import net.minecraft.world.entity.ai.sensing.SensorType;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.schedule.Activity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import skytheory.mystique.Mystique;
 import skytheory.mystique.client.model.pose.DefaultPose;
 import skytheory.mystique.client.model.pose.ElementalPoseTransformer;
 import skytheory.mystique.client.renderer.itemlayer.DefaultItemRenderer;
@@ -21,15 +22,6 @@ import skytheory.mystique.entity.AbstractElemental;
 import skytheory.mystique.recipe.ContractRecipe;
 
 public interface MystiqueContract {
-
-	public static final ResourceLocation REGISTRY_LOCATION = new ResourceLocation(Mystique.MODID, "contract");
-	public static final MystiqueContract DEFAULT = new DefaultContract();
-
-	/**
-	 * Contract利用時に設定するActivityを指定する
-	 * 必ず一対一で対応させること
-	 */
-	Activity getActivity();
 
 	/**
 	 * Contractの優先度を指定する
@@ -43,7 +35,7 @@ public interface MystiqueContract {
 	 * Contractを適用する条件を指定する
 	 */
 	default boolean canApplyContract(AbstractElemental entity) {
-		return ContractRecipe.getContract(entity, entity.getContractItem()) == this;
+		return ContractRecipe.canApplyContract(entity, this);
 	}
 
 	/**
@@ -58,14 +50,38 @@ public interface MystiqueContract {
 	Collection<SensorType<? extends Sensor<? super AbstractElemental>>> getSensorTypes();
 
 	/**
+	 * Contractにかかわらず、常に使用するBehaviorを登録する
+	 */
+	default List<? extends BehaviorControl<? super AbstractElemental>> getCoreActions() {return Collections.emptyList();};
+	
+	/**
 	 * Contract時に使用するBehaviorを登録する
 	 */
-	Collection<? extends BehaviorControl<? super AbstractElemental>> getActions();
+	List<? extends BehaviorControl<? super AbstractElemental>> getActions();
 
-	default InteractionResult interaction(AbstractElemental entity, Player player) {
+	/**
+	 * Contract適用時に呼ばれる右クリック処理
+	 * @param entity
+	 * @param player
+	 * @return
+	 */
+	default InteractionResult activeInteract(AbstractElemental entity, Player player) {
+		return InteractionResult.PASS;
+	}
+	
+	/**
+	 * Contract非適用時に呼ばれる右クリック処理 
+	 * @param entity
+	 * @param player
+	 * @return
+	 */
+	default InteractionResult nonActiveInteract(AbstractElemental entity, Player player) {
 		return InteractionResult.PASS;
 	}
 
+	default List<EntityDataEntry<?>> createDataSyncChannel(){return Collections.emptyList();}
+	default void saveAdditionalData(AbstractElemental entity, CompoundTag nbt) {}
+	default void loadAdditionalData(AbstractElemental entity, CompoundTag nbt) {}
 	default void enterContract(AbstractElemental entity) {}
 	default void leaveContract(AbstractElemental entity) {}
 	
@@ -78,5 +94,7 @@ public interface MystiqueContract {
 	default ElementalItemRenderer getItemRenderer(AbstractElemental entity) {
 		return DefaultItemRenderer::render;
 	}
+	
+	public static record EntityDataEntry<T>(EntityDataAccessor<T> accessor, T initialValue) {}
 	
 }

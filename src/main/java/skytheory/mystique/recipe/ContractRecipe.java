@@ -1,7 +1,5 @@
 package skytheory.mystique.recipe;
 
-import java.util.List;
-
 import org.jetbrains.annotations.Nullable;
 
 import com.google.gson.JsonObject;
@@ -10,7 +8,6 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.Container;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -19,6 +16,7 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import skytheory.mystique.Mystique;
+import skytheory.mystique.entity.AbstractElemental;
 import skytheory.mystique.entity.ai.contract.MystiqueContract;
 import skytheory.mystique.init.MystiqueRecipeTypes;
 import skytheory.mystique.init.MystiqueRegistries;
@@ -78,21 +76,14 @@ public class ContractRecipe implements Recipe<Container> {
 		return MystiqueRecipeTypes.CONTRACT;
 	}
 
-	public boolean matches(Entity entity, ItemStack stack) {
-		return item.test(stack);
+	public boolean matches(AbstractElemental entity) {
+		return item.test(entity.getContractItem());
 	}
 	
-	public static MystiqueContract getContract(Entity entity, ItemStack stack) {
+	public static boolean canApplyContract(AbstractElemental entity, MystiqueContract contract) {
 		return entity.getLevel().getRecipeManager().getAllRecipesFor(MystiqueRecipeTypes.CONTRACT).stream()
-		.filter(recipe -> recipe.matches(entity, stack))
-		.map(ContractRecipe::getContract)
-		.findFirst().orElse(MystiqueContract.DEFAULT);
-	}
-	
-	public static List<ContractRecipe> getRecipesFor(Entity entity, ItemStack stack) {
-		return entity.getLevel().getRecipeManager().getAllRecipesFor(MystiqueRecipeTypes.CONTRACT).stream()
-				.filter(recipe -> recipe.matches(entity, stack))
-				.toList();
+				.filter(recipe -> recipe.contract.equals(contract))
+				.anyMatch(recipe -> recipe.matches(entity));
 	}
 	
 	public JsonObject serializeRecipe() {

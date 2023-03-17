@@ -1,6 +1,8 @@
 package skytheory.mystique.entity.ai.contract;
 
 import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import net.minecraft.world.entity.ai.behavior.BehaviorControl;
@@ -8,33 +10,26 @@ import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.sensing.Sensor;
 import net.minecraft.world.entity.ai.sensing.SensorType;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.schedule.Activity;
 import skytheory.mystique.container.ElementalContainerMenu;
 import skytheory.mystique.entity.AbstractElemental;
 import skytheory.mystique.entity.ai.behavior.interacting.FollowInteractingPlayer;
-import skytheory.mystique.init.MystiqueActivities;
 
 public class InteractingPlayerContract implements MystiqueContract {
-
-	@Override
-	public Activity getActivity() {
-		return MystiqueActivities.INTERACTING;
-	}
 
 	/**
 	 * 通常のContractより優先して実行する
 	 */
 	@Override
 	public int getPriority() {
-		return 50;
+		return 10;
 	}
 
 	@Override
 	public boolean canApplyContract(AbstractElemental entity) {
 		if (entity.getBrain().hasMemoryValue(MemoryModuleType.IS_PANICKING)) return false;
-		Player player = entity.getInteractingPlayer();
-		if (player == null) return false;
-		return player.containerMenu instanceof ElementalContainerMenu;
+		Optional<Player> playerOpt = entity.getInteractingPlayer();
+		if (playerOpt.isEmpty()) return false;
+		return playerOpt.get().containerMenu instanceof ElementalContainerMenu;
 	}
 	
 	@Override
@@ -48,8 +43,8 @@ public class InteractingPlayerContract implements MystiqueContract {
 	}
 
 	@Override
-	public Collection<? extends BehaviorControl<? super AbstractElemental>> getActions() {
-		return Set.of(new FollowInteractingPlayer(1.0f));
+	public List<? extends BehaviorControl<? super AbstractElemental>> getActions() {
+		return List.of(new FollowInteractingPlayer(1.0f));
 	}
 
 }

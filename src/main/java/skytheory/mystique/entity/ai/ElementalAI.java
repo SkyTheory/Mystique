@@ -1,52 +1,49 @@
 package skytheory.mystique.entity.ai;
 
+import java.util.List;
+
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 
 import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.Brain.Provider;
-import net.minecraft.world.entity.ai.behavior.AnimalPanic;
-import net.minecraft.world.entity.ai.behavior.LookAtTargetSink;
-import net.minecraft.world.entity.ai.behavior.MoveToTargetSink;
+import net.minecraft.world.entity.ai.behavior.BehaviorControl;
 import net.minecraft.world.entity.schedule.Activity;
 import skytheory.mystique.entity.AbstractElemental;
-import skytheory.mystique.entity.ai.behavior.core.FloatFluid;
-import skytheory.mystique.entity.ai.behavior.core.UpdateElementalActivities;
+import skytheory.mystique.entity.ai.behavior.util.ContractBehavior;
 import skytheory.mystique.entity.ai.contract.MystiqueContract;
-import skytheory.mystique.init.ElementalAIRegistry;
-import skytheory.mystique.init.MystiqueContracts;
-import skytheory.mystique.init.MystiqueRegistries;
+import skytheory.mystique.init.ContractManager;
+import skytheory.mystique.init.ElementalAIManager;
+import skytheory.mystique.init.MystiqueActivities;
 
 public class ElementalAI {
 
 	public static Provider<AbstractElemental> brainProvider() {
-		return Brain.provider(ElementalAIRegistry.getMemoryTypes(), ElementalAIRegistry.getSensorTypes());
+		return Brain.provider(ElementalAIManager.getMemoryTypes(), ElementalAIManager.getSensorTypes());
 	}
 
 	public static void initBrain(AbstractElemental pEntity, Brain<AbstractElemental> pBrain) {
-		initCoreActivity(pBrain);
-		initContractActivities(pBrain);
+		registerCoreActions(pBrain);
+		registerContractActions(pBrain);
 		pBrain.setCoreActivities(ImmutableSet.of(Activity.CORE));
-		pBrain.setDefaultActivity(MystiqueContracts.DEFAULT.getActivity());
-		pBrain.setActiveActivityIfPossible(Activity.CORE);
+		pBrain.setDefaultActivity(MystiqueActivities.CONTRACT);
+		pBrain.useDefaultActivity();
+	}
+	
+	private static void registerCoreActions(Brain<AbstractElemental> brain) {
+		List<? extends BehaviorControl<? super AbstractElemental>> behaviors = ContractManager.getAllContracts().stream()
+				.map(MystiqueContract::getCoreActions)
+				.flatMap(List::stream)
+				.distinct()
+				.toList();
+		brain.addActivity(Activity.CORE, 0, ImmutableList.copyOf(behaviors));
 	}
 
-	private static void initContractActivities(Brain<AbstractElemental> pBrain) {
-		MystiqueRegistries.CONTRACTS.getValues().stream().forEach(contract -> registerContractActions(pBrain, contract));
-	}
-
-	private static void initCoreActivity(Brain<AbstractElemental> brain) {
-		brain.addActivity(Activity.CORE, 0, ImmutableList.of(
-				new FloatFluid(),
-				new UpdateElementalActivities(),
-				new AnimalPanic(2.0f),
-				new LookAtTargetSink(45, 90),
-				new MoveToTargetSink()
-				));
-	}
-
-	private static void registerContractActions(Brain<AbstractElemental> brain, MystiqueContract contract) {
-		brain.addActivity(contract.getActivity(), 0, ImmutableList.copyOf(contract.getActions()));
+	private static void registerContractActions(Brain<AbstractElemental> pBrain) {
+		List<ContractBehavior> behaviors = ContractManager.getAllContracts().stream()
+		.map(ContractBehavior::new)
+		.toList();
+		pBrain.addActivity(MystiqueActivities.CONTRACT, 0, ImmutableList.copyOf(behaviors));
 	}
 
 }

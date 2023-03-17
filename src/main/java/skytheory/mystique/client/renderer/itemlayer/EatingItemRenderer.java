@@ -11,13 +11,14 @@ import net.minecraft.world.item.ItemStack;
 import skytheory.mystique.client.model.AbstractElementalModel;
 import skytheory.mystique.entity.AbstractElemental;
 import skytheory.mystique.entity.ai.behavior.eat.EatItem;
+import skytheory.mystique.entity.ai.contract.EatItemContract;
 
 public class EatingItemRenderer {
 	
 	public static <T extends AbstractElemental> void render(AbstractElementalModel<T> model, PoseStack pPoseStack, MultiBufferSource pBuffer, int pPackedLight, T pLivingEntity, ItemInHandRenderer pItemInHandRenderer) {
-		int eatingTicks = pLivingEntity.getEntityData().get(AbstractElemental.DATA_EATING_TICKS);
+		int eatingTicks = pLivingEntity.getEntityData().get(EatItemContract.DATA_EATING_TICKS);
 		if (eatingTicks > EatItem.DURATION_EAT_BEFORE) {
-			ItemStack stack = pLivingEntity.getEatingItem();
+			ItemStack stack = EatItemContract.getEatingItem(pLivingEntity);
 			HumanoidArm arm = pLivingEntity.getMainArm();
 			TransformType type = arm == HumanoidArm.LEFT ? TransformType.THIRD_PERSON_LEFT_HAND : TransformType.THIRD_PERSON_RIGHT_HAND;
 			pPoseStack.pushPose();

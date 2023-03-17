@@ -25,7 +25,6 @@ public class FieldMarkerRenderer extends EntityRenderer<FieldMarker> {
 
 	public void render(FieldMarker pEntity, float pEntityYaw, float pPartialTick, PoseStack pPoseStack, MultiBufferSource pBuffer, int pPackedLight) {
 		if (!pEntity.isPickable()) return;
-		if (pEntity == null || pEntity.isInvisible()) return;
 		pPoseStack.pushPose();
 		pPoseStack.scale(-1.0f, -1.0f, 1.0f);
 		pPoseStack.translate(0.0f, -0.5f, 0.0f);

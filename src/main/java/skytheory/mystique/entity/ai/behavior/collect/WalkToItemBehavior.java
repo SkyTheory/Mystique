@@ -25,13 +25,14 @@ public class WalkToItemBehavior extends Behavior<AbstractElemental> {
 
 	@Override
 	protected boolean checkExtraStartConditions(ServerLevel pLevel, AbstractElemental pOwner) {
-		return pOwner.getItemInHand(InteractionHand.MAIN_HAND).isEmpty();
+		if (!pOwner.getItemInHand(InteractionHand.MAIN_HAND).isEmpty()) return false;
+		Optional<ItemEntity> opt = pOwner.getBrain().getMemory(MystiqueMemoryModuleTypes.COLLECT_ITEM);
+		return opt.map(itemEntity -> !itemEntity.isRemoved()).orElse(false);
 	}
 
 	@Override
 	protected boolean canStillUse(ServerLevel pLevel, AbstractElemental pEntity, long pGameTime) {
-		Optional<ItemEntity> opt = pEntity.getBrain().getMemory(MystiqueMemoryModuleTypes.COLLECT_ITEM);
-		return opt.map(itemEntity -> !itemEntity.isRemoved()).orElse(false);
+		return checkExtraStartConditions(pLevel, pEntity);
 	}
 
 	@Override

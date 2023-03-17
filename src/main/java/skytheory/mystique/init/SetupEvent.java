@@ -28,9 +28,11 @@ import net.minecraftforge.fml.event.lifecycle.FMLConstructModEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModProcessEvent;
 import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.IForgeRegistryInternal;
 import net.minecraftforge.registries.NewRegistryEvent;
 import net.minecraftforge.registries.RegisterEvent;
 import net.minecraftforge.registries.RegistryBuilder;
+import net.minecraftforge.registries.RegistryManager;
 import skytheory.lib.init.ResourceRegister;
 import skytheory.mystique.Mystique;
 import skytheory.mystique.client.model.FieldMarkerModel;
@@ -60,12 +62,18 @@ public class SetupEvent {
 	@SubscribeEvent
 	public static void newRegistry(NewRegistryEvent event) {
 		RegistryBuilder<MystiqueContract> builder = new RegistryBuilder<>();
-		builder.setName(MystiqueContract.REGISTRY_LOCATION);
-		builder.setDefaultKey(new ResourceLocation(Mystique.MODID, "default"));
+		builder.setName(MystiqueRegistries.Keys.CONTRACTS.location());
 		builder.disableOverrides();
-		builder.disableSync();
-		builder.onAdd(ElementalAIRegistry::onAdd);
+		builder.onAdd(ContractManager::onAdd);
+		builder.onBake(SetupEvent::onContractRegistryBake);
 		event.create(builder);
+	}
+	
+	private static void onContractRegistryBake(IForgeRegistryInternal<MystiqueContract> owner, RegistryManager stage) {
+		if (stage == RegistryManager.ACTIVE) {
+			ContractManager.init(owner);
+			ElementalAIManager.init(owner);
+		}
 	}
 
 	@SubscribeEvent

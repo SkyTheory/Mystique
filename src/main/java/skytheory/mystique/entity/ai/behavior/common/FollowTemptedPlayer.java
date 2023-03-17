@@ -1,4 +1,4 @@
-package skytheory.mystique.entity.ai.behavior.core;
+package skytheory.mystique.entity.ai.behavior.common;
 
 import java.util.Map;
 import java.util.Optional;
@@ -13,20 +13,29 @@ import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.minecraft.world.entity.ai.memory.WalkTarget;
 import net.minecraft.world.entity.player.Player;
 
-public class FollowTemptationWithoutCooldown extends Behavior<PathfinderMob> {
+public class FollowTemptedPlayer extends Behavior<PathfinderMob> {
 
-	public static final Map<MemoryModuleType<?>, MemoryStatus> ENTRIES = Map.ofEntries(
-			Map.entry(MemoryModuleType.LOOK_TARGET, MemoryStatus.REGISTERED),
-			Map.entry(MemoryModuleType.WALK_TARGET, MemoryStatus.REGISTERED),
-			Map.entry(MemoryModuleType.IS_TEMPTED, MemoryStatus.REGISTERED),
-			Map.entry(MemoryModuleType.TEMPTING_PLAYER, MemoryStatus.VALUE_PRESENT),
-			Map.entry(MemoryModuleType.IS_PANICKING, MemoryStatus.VALUE_ABSENT)
-			);
-
-	private final float speedModifier;
-
-	public FollowTemptationWithoutCooldown(float speedModifier) {
-		super(ENTRIES);
+	public final int cooldown;
+	public final float speedModifier;
+	
+	public FollowTemptedPlayer() {
+		this(0, 1.0f);
+	}
+	
+	public FollowTemptedPlayer(float speedModifier) {
+		this(0, speedModifier);
+	}
+	
+	public FollowTemptedPlayer(int cooldown, float speedModifier) {
+		super(Map.ofEntries(
+				Map.entry(MemoryModuleType.LOOK_TARGET, MemoryStatus.REGISTERED),
+				Map.entry(MemoryModuleType.WALK_TARGET, MemoryStatus.REGISTERED),
+				Map.entry(MemoryModuleType.IS_TEMPTED, MemoryStatus.REGISTERED),
+				Map.entry(MemoryModuleType.TEMPTING_PLAYER, MemoryStatus.VALUE_PRESENT),
+				Map.entry(MemoryModuleType.TEMPTATION_COOLDOWN_TICKS, MemoryStatus.VALUE_ABSENT),
+				Map.entry(MemoryModuleType.IS_PANICKING, MemoryStatus.VALUE_ABSENT)
+				));
+		this.cooldown = cooldown;
 		this.speedModifier = speedModifier;
 	}
 
@@ -49,6 +58,9 @@ public class FollowTemptationWithoutCooldown extends Behavior<PathfinderMob> {
 	protected void stop(ServerLevel pLevel, PathfinderMob pEntity, long pGameTime) {
 		Brain<?> brain = pEntity.getBrain();
 		brain.setMemory(MemoryModuleType.IS_TEMPTED, false);
+		if (this.cooldown > 0) {
+			brain.setMemory(MemoryModuleType.TEMPTATION_COOLDOWN_TICKS, cooldown);
+		}
 		brain.eraseMemory(MemoryModuleType.WALK_TARGET);
 		brain.eraseMemory(MemoryModuleType.LOOK_TARGET);
 	}

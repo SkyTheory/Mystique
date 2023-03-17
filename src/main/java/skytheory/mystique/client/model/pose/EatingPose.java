@@ -8,6 +8,7 @@ import skytheory.mystique.client.model.AbstractElementalModel;
 import skytheory.mystique.client.model.RotateParameters;
 import skytheory.mystique.entity.AbstractElemental;
 import skytheory.mystique.entity.ai.behavior.eat.EatItem;
+import skytheory.mystique.entity.ai.contract.EatItemContract;
 
 public class EatingPose {
 
@@ -15,7 +16,7 @@ public class EatingPose {
 		Vector3f vec3f =  new Vector3f(Mth.cos(ctx.limbSwing() * 0.662f * RotateParameters.LIMB_SWING_WEIGHT / ctx.entity().getScale()) * ctx.limbSwingAmount(), 0.0f, 0.0f);
 		DefaultPose.animHead(model, ctx);
 		DefaultPose.swingLegs(model, vec3f);
-		int eatingTicks = ctx.entity().getEntityData().get(AbstractElemental.DATA_EATING_TICKS);
+		int eatingTicks = ctx.entity().getEntityData().get(EatItemContract.DATA_EATING_TICKS);
 		float stage = calcEatingPoseAmount(eatingTicks, ctx.partialTick());
 		poseArm(model, ctx, stage);
 	}

@@ -13,6 +13,7 @@ import net.minecraft.world.phys.Vec3;
 import skytheory.lib.util.FloatUtils;
 import skytheory.lib.util.RandomHelper;
 import skytheory.mystique.entity.AbstractElemental;
+import skytheory.mystique.entity.ai.contract.EatItemContract;
 import skytheory.mystique.recipe.PreferenceRecipe;
 
 public class EatItem extends Behavior<AbstractElemental> {
@@ -26,7 +27,7 @@ public class EatItem extends Behavior<AbstractElemental> {
 	
 	@Override
 	protected boolean checkExtraStartConditions(ServerLevel pLevel, AbstractElemental pOwner) {
-		ItemStack stack = pOwner.getEatingItem();
+		ItemStack stack = EatItemContract.getEatingItem(pOwner);
 		return PreferenceRecipe.getRecipe(pOwner, stack).isPresent();
 	}
 	
@@ -37,15 +38,15 @@ public class EatItem extends Behavior<AbstractElemental> {
 	
 	@Override
 	protected void start(ServerLevel pLevel, AbstractElemental pEntity, long pGameTime) {
-		pEntity.getEntityData().set(AbstractElemental.DATA_IS_EATING, true);
+		pEntity.getEntityData().set(EatItemContract.DATA_IS_EATING, true);
 		pEntity.getNavigation().stop();
 	}
 	
 	@Override
 	protected void tick(ServerLevel pLevel, AbstractElemental pEntity, long pGameTime) {
-		int ticks = pEntity.getEntityData().get(AbstractElemental.DATA_EATING_TICKS);
-		ItemStack stack = pEntity.getEatingItem();
-		pEntity.getEntityData().set(AbstractElemental.DATA_EATING_TICKS, ++ticks);
+		int ticks = pEntity.getEntityData().get(EatItemContract.DATA_EATING_TICKS);
+		ItemStack stack = EatItemContract.getEatingItem(pEntity);
+		pEntity.getEntityData().set(EatItemContract.DATA_EATING_TICKS, ++ticks);
 		if (ticks > DURATION_EAT_BEFORE) {
 			int eatingTicks = ticks - DURATION_EAT_BEFORE;
 			if (shouldTriggerEatEffects(eatingTicks)) eatProcess(pEntity, stack);
@@ -61,7 +62,7 @@ public class EatItem extends Behavior<AbstractElemental> {
 
 	protected void eatComplete(AbstractElemental pEntity, ItemStack pStack) {
 		for (int i = 0; i < 2; i++, this.triggerItemUseEffects(pEntity, pStack));
-		pEntity.setEatingItem(ItemStack.EMPTY);
+		EatItemContract.setEatingItem(pEntity, ItemStack.EMPTY);
 		pEntity.heal(pEntity.getMaxHealth());
 		pEntity.playSound(SoundEvents.ITEM_PICKUP, 1.0f, pEntity.getRandom().nextFloat() * 0.2f + 0.9f);
 	}
@@ -102,8 +103,8 @@ public class EatItem extends Behavior<AbstractElemental> {
 
 	@Override
 	protected void stop(ServerLevel pLevel, AbstractElemental pEntity, long pGameTime) {
-		pEntity.getEntityData().set(AbstractElemental.DATA_IS_EATING, false);
-		pEntity.getEntityData().set(AbstractElemental.DATA_EATING_TICKS, 0);
+		pEntity.getEntityData().set(EatItemContract.DATA_IS_EATING, false);
+		pEntity.getEntityData().set(EatItemContract.DATA_EATING_TICKS, 0);
 		super.stop(pLevel, pEntity, pGameTime);
 	}
 	

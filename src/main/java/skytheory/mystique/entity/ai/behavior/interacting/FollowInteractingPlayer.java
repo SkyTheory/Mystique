@@ -1,6 +1,7 @@
 package skytheory.mystique.entity.ai.behavior.interacting;
 
 import java.util.Map;
+import java.util.Optional;
 
 import com.google.common.collect.ImmutableMap;
 
@@ -16,6 +17,7 @@ import skytheory.mystique.container.ElementalContainerMenu;
 import skytheory.mystique.entity.AbstractElemental;
 
 public class FollowInteractingPlayer extends Behavior<AbstractElemental> {
+	
 	private final float speedModifier;
 
 	public FollowInteractingPlayer(float pSpeedModifier) {
@@ -27,11 +29,12 @@ public class FollowInteractingPlayer extends Behavior<AbstractElemental> {
 	}
 
 	protected boolean checkExtraStartConditions(ServerLevel pLevel, AbstractElemental pEntity) {
-		Player player = pEntity.getInteractingPlayer();
-		if (player == null) return false;
+		Optional<Player> playerOpt = pEntity.getInteractingPlayer();
+		if (playerOpt.isEmpty()) return false;
 		if (!pEntity.isAlive()) return false;
 		if (pEntity.isInWater()) return false;
 		if (pEntity.hurtMarked) return false;
+		Player player = playerOpt.get();
 		if (pEntity.distanceToSqr(player) > 64.0d) return false;
 		if (pEntity.distanceToSqr(player) <= 4.0d) return false;
 		return player.containerMenu instanceof ElementalContainerMenu;
@@ -41,25 +44,19 @@ public class FollowInteractingPlayer extends Behavior<AbstractElemental> {
 		return this.checkExtraStartConditions(pLevel, pEntity);
 	}
 
-	protected void start(ServerLevel pLevel, AbstractElemental pEntity, long pGameTime) {
-		this.followPlayer(pEntity);
+	protected void tick(ServerLevel pLevel, AbstractElemental pOwner, long pGameTime) {
+		Optional<Player> playerOpt = pOwner.getInteractingPlayer();
+		playerOpt.ifPresent(player -> {
+			Brain<?> brain = pOwner.getBrain();
+			brain.setMemory(MemoryModuleType.LOOK_TARGET, new EntityTracker(player, true));
+			brain.setMemory(MemoryModuleType.WALK_TARGET, new WalkTarget(new EntityTracker(player, false), this.speedModifier, 2));
+		});
 	}
 
 	protected void stop(ServerLevel pLevel, AbstractElemental pEntity, long pGameTime) {
 		Brain<?> brain = pEntity.getBrain();
+		brain.eraseMemory(MemoryModuleType.LOOK_TARGET);
 		brain.eraseMemory(MemoryModuleType.WALK_TARGET);
 	}
-
-	protected void tick(ServerLevel pLevel, AbstractElemental pOwner, long pGameTime) {
-	}
-
-	protected boolean timedOut(long pGameTime) {
-		return false;
-	}
-
-	private void followPlayer(AbstractElemental pEntity) {
-		Brain<?> brain = pEntity.getBrain();
-		brain.setMemory(MemoryModuleType.WALK_TARGET, new WalkTarget(new EntityTracker(pEntity.getInteractingPlayer(), false), this.speedModifier, 2));
-		brain.setMemory(MemoryModuleType.LOOK_TARGET, new EntityTracker(pEntity.getInteractingPlayer(), true));
-	}
+	
 }
