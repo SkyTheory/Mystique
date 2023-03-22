@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "mystique:block/device_mana_channeler"
+    }
+  }
+}

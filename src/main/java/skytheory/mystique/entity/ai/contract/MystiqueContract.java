@@ -16,8 +16,8 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import skytheory.mystique.client.model.pose.DefaultPose;
 import skytheory.mystique.client.model.pose.ElementalPoseTransformer;
-import skytheory.mystique.client.renderer.itemlayer.DefaultItemRenderer;
-import skytheory.mystique.client.renderer.itemlayer.ElementalItemRenderer;
+import skytheory.mystique.client.renderer.layer.DefaultItemRenderer;
+import skytheory.mystique.client.renderer.layer.ElementalItemRenderer;
 import skytheory.mystique.entity.AbstractElemental;
 import skytheory.mystique.recipe.ContractRecipe;
 

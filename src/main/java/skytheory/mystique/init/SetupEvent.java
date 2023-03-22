@@ -157,4 +157,5 @@ public class SetupEvent {
 		event.registerLayerDefinition(FieldMarkerModel.LAYER_LOCATION, FieldMarkerModel::createBodyLayer);
 		event.registerLayerDefinition(TinyTNTModel.LAYER_LOCATION, TinyTNTModel::createBodyLayer);
 	}
+	
 }

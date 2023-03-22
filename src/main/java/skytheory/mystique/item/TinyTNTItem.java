@@ -33,7 +33,7 @@ public class TinyTNTItem extends AbstractCoordinatedEntityPlacerItem<TinyTNT> {
 		level.playSound(player, x, y, z, SoundEvents.TNT_PRIMED, SoundSource.NEUTRAL, volume, pitch);
 	}
 	
-	@Override
+//	@Override
 	public BlockRotation getRotation(RightClickBlock event, Level level, @Nullable Direction face) {
 		BlockHitResult hitResult = event.getHitVec();
 		Direction direction = hitResult.getDirection();

@@ -8,16 +8,15 @@ import skytheory.lib.capability.DataProvider;
 import skytheory.mystique.Mystique;
 import skytheory.mystique.init.MystiqueCapabilities;
 
-public interface ManaHandlerItem extends CapabilityHolder {
+public interface ManaHandlerHolder extends CapabilityHolder {
 
 	public static ResourceLocation MANA_KEY = new ResourceLocation(Mystique.MODID, "mana");
 	
-	ManaHandler createManaHandler();
+	ManaHandler getManaHandler();
 	
 	@Override
 	default List<CapabilityEntry> getCapabilityProviders() {
-		ManaHandler handler = createManaHandler();
-		return List.of(new CapabilityEntry(MANA_KEY, new DataProvider<>(MystiqueCapabilities.MANA_CAPABILITY, side -> handler, () -> handler)));
+		return List.of(new CapabilityEntry(MANA_KEY, new DataProvider<>(MystiqueCapabilities.MANA_CAPABILITY, this::getManaHandler, this::getManaHandler)));
 	}
 	
 }

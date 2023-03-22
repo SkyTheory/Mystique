@@ -1,9 +1,10 @@
-// 1.19.3	2023-03-04T04:00:27.6797887	Item Models: mystique
+// 1.19.3	2023-03-19T04:58:48.4963752	Item Models: mystique
 a87bb48e52dbd4a4e3c5f6b533f328cb57f9ce22 assets/mystique/models/item/contract_document.json
 48e57386a55864d78e720c0dd0390add0aac0602 assets/mystique/models/item/crux_air.json
 830d6ed415312fbac44e19b91528130986728c98 assets/mystique/models/item/crux_earth.json
 9da6ccc6a3aa0f63d72f8648c505e55bd9c1e1ab assets/mystique/models/item/crux_fire.json
 dfbe507586b2fa50dee2e8eabd6fd76846f60134 assets/mystique/models/item/crux_water.json
+16a650928dd34ed455dfd52dee2d522be8be7c7f assets/mystique/models/item/device_mana_channeler.json
 559289760ea4ad9068750f447bd54776f980d83e assets/mystique/models/item/device_mana_infuser.json
 d9191f316e7a5d810b819804fdb96e8b5c60b9a8 assets/mystique/models/item/device_wall_bookshelf.json
 f9b0050a4d120dfe21948cd77a5fb8a3fb74c364 assets/mystique/models/item/device_writing_chest.json

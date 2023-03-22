@@ -3,7 +3,7 @@ package skytheory.mystique.capability;
 import net.minecraft.nbt.CompoundTag;
 import skytheory.mystique.capability.ElementComponent.ElementQuality;
 
-public class CreativeManaHandler implements IManaHandler {
+public class CreativeManaHandler implements ManaHandler {
 
 	@Override
 	public CompoundTag serializeNBT() {

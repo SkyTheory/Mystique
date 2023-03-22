@@ -6,7 +6,7 @@ import net.minecraftforge.common.util.INBTSerializable;
 import skytheory.mystique.capability.ElementComponent.ElementQuality;
 
 @AutoRegisterCapability
-public interface IManaHandler extends INBTSerializable<CompoundTag> {
+public interface ManaHandler extends INBTSerializable<CompoundTag> {
 
 	public int getAmount(ElementQuality quality);
 	public int getCapacity(ElementQuality quality);

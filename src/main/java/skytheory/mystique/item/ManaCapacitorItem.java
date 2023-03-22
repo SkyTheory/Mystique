@@ -8,7 +8,7 @@ import net.minecraft.world.item.ItemStack;
 import skytheory.lib.util.CapabilityUtils;
 import skytheory.mystique.capability.ElementComponent.ElementQuality;
 import skytheory.mystique.capability.GenericManaHandler;
-import skytheory.mystique.capability.IManaHandler;
+import skytheory.mystique.capability.ManaHandler;
 import skytheory.mystique.capability.ManaHandlerItem;
 import skytheory.mystique.init.MystiqueCapabilities;
 import skytheory.mystique.util.CreativeModeTabAliases;
@@ -27,21 +27,21 @@ public class ManaCapacitorItem extends Item implements ManaHandlerItem, Creative
 
 	@Override
 	public boolean isBarVisible(ItemStack pStack) {
-		IManaHandler handler = CapabilityUtils.getCapability(MystiqueCapabilities.MANA_CAPABILITY, pStack);
+		ManaHandler handler = CapabilityUtils.getCapability(MystiqueCapabilities.MANA_CAPABILITY, pStack);
 		return getManaRatio(handler) != 1.0f;
 	}
 
 	public int getBarWidth(ItemStack pStack) {
-		IManaHandler handler = CapabilityUtils.getCapability(MystiqueCapabilities.MANA_CAPABILITY, pStack);
+		ManaHandler handler = CapabilityUtils.getCapability(MystiqueCapabilities.MANA_CAPABILITY, pStack);
 		return Math.round(getManaRatio(handler) * WIDTH_DURABILITY_BAR);
 	}
 
 	public int getBarColor(ItemStack pStack) {
-		IManaHandler handler = CapabilityUtils.getCapability(MystiqueCapabilities.MANA_CAPABILITY, pStack);
+		ManaHandler handler = CapabilityUtils.getCapability(MystiqueCapabilities.MANA_CAPABILITY, pStack);
 		return Mth.hsvToRgb(getManaRatio(handler) / 3.0f, 1.0f, 1.0f);
 	}
 
-	public float getManaRatio(IManaHandler handler) {
+	public float getManaRatio(ManaHandler handler) {
 		int amounts = 0;
 		int capacities = 0;
 		int types = 0;
@@ -59,7 +59,7 @@ public class ManaCapacitorItem extends Item implements ManaHandlerItem, Creative
 	}
 
 	@Override
-	public IManaHandler createManaHandler() {
+	public ManaHandler createManaHandler() {
 		GenericManaHandler handler = new GenericManaHandler(ExperienceUtils.getNeededXpTotal(30));
 		return handler;
 	}
@@ -67,7 +67,7 @@ public class ManaCapacitorItem extends Item implements ManaHandlerItem, Creative
 	@Override
 	public List<ItemStack> getAliases() {
 		ItemStack full = new ItemStack(this);
-		IManaHandler handler = CapabilityUtils.getCapability(MystiqueCapabilities.MANA_CAPABILITY, full);
+		ManaHandler handler = CapabilityUtils.getCapability(MystiqueCapabilities.MANA_CAPABILITY, full);
 		for (ElementQuality quality : ElementQuality.values()) {
 			handler.setAmount(quality, handler.getCapacity(quality));
 		}

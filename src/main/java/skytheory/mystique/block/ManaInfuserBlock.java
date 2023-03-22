@@ -14,6 +14,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import skytheory.lib.block.BEWLRBlock;
 import skytheory.lib.block.TickerEntityBlock;
 import skytheory.mystique.Mystique;
+import skytheory.mystique.blockentity.ManaInfuserEntity;
 import skytheory.mystique.client.model.ManaInfuserModel;
 
 public class ManaInfuserBlock extends Block implements TickerEntityBlock, BEWLRBlock {

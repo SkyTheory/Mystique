@@ -42,7 +42,7 @@ public class LookAtNearestPlayer extends Behavior<LivingEntity> {
 	
 	@Override
 	protected boolean canStillUse(ServerLevel pLevel, LivingEntity pEntity, long pGameTime) {
-		return true;
+		return pEntity.getBrain().hasMemoryValue(MemoryModuleType.NEAREST_VISIBLE_PLAYER);
 	}
 	
 	@Override

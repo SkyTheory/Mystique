@@ -6,7 +6,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.IntArrayTag;
 import net.minecraft.util.Mth;
 
-public class ManaHandlerBase extends ElementComponent implements IManaHandler {
+public class ManaHandlerBase extends ElementComponent implements ManaHandler {
 
 	private static final int PROTOCOL = 1;
 

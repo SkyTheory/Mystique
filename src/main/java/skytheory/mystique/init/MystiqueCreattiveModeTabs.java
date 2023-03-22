@@ -12,7 +12,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import skytheory.lib.util.CapabilityUtils;
 import skytheory.mystique.Mystique;
 import skytheory.mystique.capability.ElementComponent.ElementQuality;
-import skytheory.mystique.capability.IManaHandler;
+import skytheory.mystique.capability.ManaHandler;
 import skytheory.mystique.util.CreativeModeTabAliases;
 
 public class MystiqueCreattiveModeTabs {
@@ -21,7 +21,7 @@ public class MystiqueCreattiveModeTabs {
 		builder.title(Component.translatable("itemGroup.mystique"))
 		.icon(() -> {
 			ItemStack stack = new ItemStack(MystiqueItems.MANA_CAPACITOR);
-			IManaHandler handler = CapabilityUtils.getCapability(MystiqueCapabilities.MANA_CAPABILITY, stack);
+			ManaHandler handler = CapabilityUtils.getCapability(MystiqueCapabilities.MANA_CAPABILITY, stack);
 			for (ElementQuality quality : ElementQuality.values()) {
 				handler.setAmount(quality, handler.getCapacity(quality));
 			}

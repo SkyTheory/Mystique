@@ -3,10 +3,10 @@ package skytheory.mystique.init;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.capabilities.CapabilityToken;
-import skytheory.mystique.capability.IManaHandler;
+import skytheory.mystique.capability.ManaHandler;
 
 public class MystiqueCapabilities {
 
-	public static final Capability<IManaHandler> MANA_CAPABILITY = CapabilityManager.get(new CapabilityToken<>(){});
+	public static final Capability<ManaHandler> MANA_CAPABILITY = CapabilityManager.get(new CapabilityToken<>(){});
 	
 }

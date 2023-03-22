@@ -1,4 +1,4 @@
-package skytheory.mystique.client.renderer.itemlayer;
+package skytheory.mystique.client.renderer.layer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;

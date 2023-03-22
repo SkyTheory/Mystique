@@ -1,6 +1,4 @@
-package skytheory.mystique.block;
-
-import java.util.List;
+package skytheory.mystique.blockentity;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -8,28 +6,31 @@ import com.mojang.logging.LogUtils;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent.LeftClickBlock;
+import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBlock;
 import net.minecraftforge.items.IItemHandler;
-import skytheory.lib.block.InteractiveBlockEntityMainHand;
+import skytheory.lib.block.RightClickReceiverBlockEntity;
 import skytheory.lib.block.TickerBlockEntity;
 import skytheory.lib.capability.itemhandler.InventoryHandler;
-import skytheory.lib.capability.itemhandler.ItemHandlerEntity;
+import skytheory.lib.capability.itemhandler.InventoryHolder;
 import skytheory.lib.util.ItemHandlerMode;
 import skytheory.lib.util.ItemHandlerUtils;
 import skytheory.mystique.init.MystiqueBlockEntities;
 
-public class ManaInfuserEntity extends BlockEntity implements TickerBlockEntity, ItemHandlerEntity, InteractiveBlockEntityMainHand {
+// TODO Mana関連の処理
+public class ManaInfuserEntity extends BlockEntity implements TickerBlockEntity, RightClickReceiverBlockEntity, InventoryHolder<CompoundTag> {
 
-	public IItemHandler handler;
+	public final InventoryHandler handler;
 	
 	public ManaInfuserEntity(BlockPos pPos, BlockState pBlockState) {
-		super(MystiqueBlockEntities.mana_infuser, pPos, pBlockState);
+		super(MystiqueBlockEntities.MANA_INFUSER, pPos, pBlockState);
+		this.handler = new InventoryHandler(1);
 	}
 
 	public boolean isOn() {
@@ -45,11 +46,7 @@ public class ManaInfuserEntity extends BlockEntity implements TickerBlockEntity,
 	}
 
 	@Override
-	public void onLeftClicked(LeftClickBlock event, Player player, @Nullable Direction face, ItemStack stack) {
-	}
-
-	@Override
-	public void onRightClicked(RightClickBlock event, Player player, @Nullable Direction face, ItemStack stack) {
+	public void onRightClicked(RightClickBlock event, Player player, InteractionHand hand, @Nullable Direction face, ItemStack stack) {
 		if (ItemHandlerUtils.isEmpty(handler)) {
 			ItemStack handheld = ItemHandlerUtils.takeItemFromPlayer(player, InteractionHand.MAIN_HAND, 64, ItemHandlerMode.SIMULATE);
 			if (!handheld.isEmpty()) {
@@ -76,9 +73,8 @@ public class ManaInfuserEntity extends BlockEntity implements TickerBlockEntity,
 	}
 
 	@Override
-	public List<IItemHandler> createAllHandlers() {
-		this.handler = new InventoryHandler(1);
-		return List.of(this.handler);
+	public INBTSerializable<CompoundTag> getItemHandlerSerializer() {
+		return this.handler;
 	}
-
+	
 }

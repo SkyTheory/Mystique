@@ -32,6 +32,7 @@ public class BlockModelGenerator extends AbstractBlockModelGenerator {
 		layeredOre(MystiqueBlocks.ORE_DEEPSLATE_AIR, Blocks.DEEPSLATE, new ResourceLocation(Mystique.MODID, "block/ore_overlay_air"));
 		layeredOre(MystiqueBlocks.ORE_DEEPSLATE_WATER, Blocks.DEEPSLATE, new ResourceLocation(Mystique.MODID, "block/ore_overlay_water"));
 		layeredOre(MystiqueBlocks.ORE_DEEPSLATE_EARTH, Blocks.DEEPSLATE, new ResourceLocation(Mystique.MODID, "block/ore_overlay_earth"));
+		
 
 		horizontalWaterLogged(MystiqueBlocks.DEVICE_WRITING_TABLE, new ResourceLocation(Mystique.MODID, "block/device_writing_table"));
 		horizontalWaterLogged(MystiqueBlocks.DEVICE_WRITING_CHEST, new ResourceLocation(Mystique.MODID, "block/device_writing_chest"));
