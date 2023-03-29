@@ -1,4 +1,6 @@
 {
+  "block.mystique.device_mana_channeler": "Mana Channeler",
+  "block.mystique.device_mana_condenser": "Mana Condenser",
   "block.mystique.device_mana_infuser": "Mana Infuser",
   "block.mystique.device_wall_bookshelf": "Wall Bookshelf",
   "block.mystique.device_writing_chest": "Writing Chest",

@@ -13,8 +13,8 @@ import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.minecraft.world.entity.ai.memory.WalkTarget;
 import net.minecraft.world.entity.player.Player;
-import skytheory.mystique.container.ElementalContainerMenu;
 import skytheory.mystique.entity.AbstractElemental;
+import skytheory.mystique.gui.ElementalContainerMenu;
 
 public class FollowInteractingPlayer extends Behavior<AbstractElemental> {
 	

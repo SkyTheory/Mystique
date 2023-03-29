@@ -38,6 +38,8 @@ public class BlockModelGenerator extends AbstractBlockModelGenerator {
 		horizontalWaterLogged(MystiqueBlocks.DEVICE_WRITING_CHEST, new ResourceLocation(Mystique.MODID, "block/device_writing_chest"));
 		horizontalWaterLogged(MystiqueBlocks.DEVICE_WALL_BOOKSHELF, new ResourceLocation(Mystique.MODID, "block/device_wall_bookshelf"));
 		
+		registerBlockModel(MystiqueBlocks.DEVICE_MANA_CHANNELER);
+		blockEntity(MystiqueBlocks.DEVICE_MANA_CONDENSER, this.getPrefixedLocation(Blocks.IRON_BLOCK));
 		blockEntity(MystiqueBlocks.DEVICE_MANA_INFUSER, this.getPrefixedLocation(Blocks.IRON_BLOCK));
 	}
 

@@ -6,7 +6,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import skytheory.lib.util.CapabilityUtils;
-import skytheory.mystique.capability.ElementComponent.ElementQuality;
+import skytheory.mystique.capability.ElementStack.ElementQuality;
 import skytheory.mystique.capability.GenericManaHandler;
 import skytheory.mystique.capability.ManaHandler;
 import skytheory.mystique.capability.ManaHandlerItem;

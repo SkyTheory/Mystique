@@ -1,4 +1,4 @@
-package skytheory.mystique.container;
+package skytheory.mystique.gui;
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.Entity;
@@ -10,7 +10,7 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
 import net.minecraftforge.network.IContainerFactory;
-import skytheory.lib.menu.ContainerMenuBase;
+import skytheory.lib.gui.ContainerMenuBase;
 import skytheory.mystique.entity.AbstractElemental;
 import skytheory.mystique.init.MystiqueMenuTypes;
 
@@ -66,28 +66,28 @@ public class ElementalContainerMenu extends ContainerMenuBase {
 
 	@Override
 	public ItemStack quickMoveStack(Player pPlayer, int pIndex) {
-		ItemStack itemstack = ItemStack.EMPTY;
 		Slot slot = this.slots.get(pIndex);
-		if (slot != null && slot.hasItem()) {
-			ItemStack itemstack1 = slot.getItem();
-			itemstack = itemstack1.copy();
+		if (slot.hasItem()) {
+			ItemStack prevItem = slot.getItem().copy();
+			ItemStack slotItem = prevItem.copy();
 			if (pIndex >= Inventory.INVENTORY_SIZE) {
-				if (!this.moveItemStackTo(itemstack1, 0, Inventory.INVENTORY_SIZE, true)) {
+				if (!this.moveItemStackTo(slotItem, 0, Inventory.INVENTORY_SIZE, true)) {
 					return ItemStack.EMPTY;
 				}
-			} else if (!this.moveItemStackTo(itemstack1, Inventory.INVENTORY_SIZE, this.slots.size(), false)) {
+			} else if (!this.moveItemStackTo(slotItem, Inventory.INVENTORY_SIZE, this.slots.size(), false)) {
 				return ItemStack.EMPTY;
 			}
-			if (itemstack1.isEmpty()) {
+			if (slotItem.isEmpty()) {
 				slot.set(ItemStack.EMPTY);
 			} else {
-				slot.setChanged();
+				slot.set(slotItem);
 			}
-			slot.onTake(pPlayer, itemstack1);
+			slot.onTake(pPlayer, prevItem);
+			return slotItem;
 		}
-		return itemstack;
+		return ItemStack.EMPTY;
 	}
-
+	
 	@Override
 	public void removed(Player pPlayer) {
 		this.entity.resetInteractingPlayer();

@@ -1,8 +1,8 @@
 package skytheory.mystique.init;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.stream.Stream;
 
 import com.google.common.collect.ImmutableSet;
 
@@ -25,24 +25,17 @@ public class ElementalAIManager {
 
 	static void init(IForgeRegistryInternal<MystiqueContract> owner) {
 		owner.getValues().stream()
-		.flatMap(ElementalAIManager::getMemoryModuleTypes)
+		.map(MystiqueContract::getMemoryModules)
+		.flatMap(Collection::stream)
 		.distinct()
 		.forEach(ADDITIONAL_MEMORY_TYPES::add);
 		owner.getValues().stream()
-		.flatMap(ElementalAIManager::getSensorTypes)
+		.map(MystiqueContract::getSensorTypes)
+		.flatMap(Collection::stream)
 		.distinct()
 		.forEach(ADDITIONAL_SENSOR_TYPES::add);
-		
 	}
 	
-	private static Stream<MemoryModuleType<?>> getMemoryModuleTypes(MystiqueContract contract) {
-		return contract.getMemoryModules().stream();
-	}
-	
-	private static Stream<SensorType<? extends Sensor<? super AbstractElemental>>> getSensorTypes(MystiqueContract contract) {
-		return contract.getSensorTypes().stream();
-	}
-
 	public static Set<MemoryModuleType<?>> getMemoryTypes() {
 		Set<MemoryModuleType<?>> set = new HashSet<>();
 		ADDITIONAL_MEMORY_TYPES.forEach(set::add);

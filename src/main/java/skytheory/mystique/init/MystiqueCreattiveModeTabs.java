@@ -11,7 +11,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.registries.ForgeRegistries;
 import skytheory.lib.util.CapabilityUtils;
 import skytheory.mystique.Mystique;
-import skytheory.mystique.capability.ElementComponent.ElementQuality;
+import skytheory.mystique.capability.ElementStack.ElementQuality;
 import skytheory.mystique.capability.ManaHandler;
 import skytheory.mystique.util.CreativeModeTabAliases;
 

@@ -1,7 +1,7 @@
 package skytheory.mystique.capability;
 
 import net.minecraft.nbt.CompoundTag;
-import skytheory.mystique.capability.ElementComponent.ElementQuality;
+import skytheory.mystique.capability.ElementStack.ElementQuality;
 
 public class CreativeManaHandler implements ManaHandler {
 
@@ -29,17 +29,17 @@ public class CreativeManaHandler implements ManaHandler {
 	}
 
 	@Override
-	public ElementComponent insert(ElementComponent component, ManaHandlerMode mode) {
-		return new ElementComponent();
+	public ElementStack insert(ElementStack component, ManaHandlerMode mode) {
+		return new ElementStack();
 	}
 
 	@Override
-	public ElementComponent extract(ElementComponent component, ManaHandlerMode mode) {
+	public ElementStack extract(ElementStack component, ManaHandlerMode mode) {
 		return component.copy();
 	}
 
 	@Override
-	public boolean consume(ElementComponent component, ManaHandlerMode mode) {
+	public boolean consume(ElementStack component, ManaHandlerMode mode) {
 		return true;
 	}
 

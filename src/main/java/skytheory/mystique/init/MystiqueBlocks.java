@@ -5,6 +5,7 @@ import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.Material;
 import skytheory.mystique.block.ManaChannelerBlock;
+import skytheory.mystique.block.ManaCondenserBlock;
 import skytheory.mystique.block.ManaInfuserBlock;
 import skytheory.mystique.block.WallShelfBlock;
 import skytheory.mystique.block.WritingChestBlock;
@@ -23,6 +24,7 @@ public class MystiqueBlocks {
 	public static final Block ORE_DEEPSLATE_EARTH = new Block(deepslateProperties());
 
 	public static final Block DEVICE_MANA_CHANNELER = new ManaChannelerBlock(metalDeviceProperties());
+	public static final Block DEVICE_MANA_CONDENSER = new ManaCondenserBlock(metalDeviceProperties());
 	public static final Block DEVICE_MANA_INFUSER = new ManaInfuserBlock(metalDeviceProperties());
 	public static final Block DEVICE_WRITING_TABLE = new WritingTableBlock(woodenDeviceProperties());
 	public static final Block DEVICE_WRITING_CHEST = new WritingChestBlock(woodenDeviceProperties());

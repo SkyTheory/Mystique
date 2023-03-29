@@ -27,7 +27,7 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.registries.ForgeRegistries;
 import skytheory.mystique.Mystique;
-import skytheory.mystique.capability.ElementComponent;
+import skytheory.mystique.capability.ElementStack;
 import skytheory.mystique.init.MystiqueRecipeTypes;
 
 public class PreferenceRecipe implements Recipe<Container> {
@@ -43,25 +43,25 @@ public class PreferenceRecipe implements Recipe<Container> {
 	protected final int likeability;
 	protected final ItemStack giftItem;
 	protected final float giftChance;
-	protected final ElementComponent component;
+	protected final ElementStack component;
 
-	public PreferenceRecipe(ResourceLocation id, Item item, int likeability, ElementComponent component) {
+	public PreferenceRecipe(ResourceLocation id, Item item, int likeability, ElementStack component) {
 		this(id, new ItemStack(item), likeability, component);
 	}
 
-	public PreferenceRecipe(ResourceLocation id, ItemStack food, int likeability, ElementComponent component) {
+	public PreferenceRecipe(ResourceLocation id, ItemStack food, int likeability, ElementStack component) {
 		this(id, food, likeability, ItemStack.EMPTY, 0.0f, component);
 	}
 
-	public PreferenceRecipe(ResourceLocation id, ItemStack food, int likeability, ItemStack gift, float chance, ElementComponent component) {
+	public PreferenceRecipe(ResourceLocation id, ItemStack food, int likeability, ItemStack gift, float chance, ElementStack component) {
 		this(id, Ingredient.of(food), likeability, gift, chance, component);
 	}
 
-	public PreferenceRecipe(ResourceLocation id, Ingredient food, int likeability, ItemStack gift, float chance, ElementComponent component) {
+	public PreferenceRecipe(ResourceLocation id, Ingredient food, int likeability, ItemStack gift, float chance, ElementStack component) {
 		this(id, null, food, likeability, gift, chance, component);
 	}
 
-	public PreferenceRecipe(ResourceLocation id, EntityType<?> type, Ingredient food, int likeability, ItemStack gift, float chance, ElementComponent component) {
+	public PreferenceRecipe(ResourceLocation id, EntityType<?> type, Ingredient food, int likeability, ItemStack gift, float chance, ElementStack component) {
 		this.id = id;
 		this.type = type;
 		this.food = food;
@@ -137,7 +137,7 @@ public class PreferenceRecipe implements Recipe<Container> {
 		JsonElement gift = ItemStack.CODEC.encodeStart(JsonOps.INSTANCE, this.giftItem).getOrThrow(true, LOGGER::error);
 		result.add("gift_item", gift);
 		result.addProperty("gift_chance", this.giftChance);
-		ElementComponent.encode(result, this.component);
+		ElementStack.encode(result, this.component);
 		return result;
 	}
 
@@ -158,7 +158,7 @@ public class PreferenceRecipe implements Recipe<Container> {
 			int likeability = GsonHelper.getAsInt(pSerializedRecipe, "likeability");
 			ItemStack gift = ItemStack.CODEC.parse(JsonOps.INSTANCE, pSerializedRecipe.get("gift_item")).getOrThrow(true, LOGGER::error);
 			float chance = GsonHelper.getAsFloat(pSerializedRecipe, "gift_chance", 0.0f);
-			ElementComponent component = ElementComponent.decode(pSerializedRecipe);
+			ElementStack component = ElementStack.decode(pSerializedRecipe);
 			return new PreferenceRecipe(pRecipeId, type, food, likeability, gift, chance, component);
 		}
 
@@ -168,7 +168,7 @@ public class PreferenceRecipe implements Recipe<Container> {
 			int likeability = pBuffer.readInt();
 			ItemStack gift = pBuffer.readItem();
 			float chance = pBuffer.readFloat();
-			ElementComponent component = ElementComponent.readFromBuffer(pBuffer);
+			ElementStack component = ElementStack.readFromBuffer(pBuffer);
 			return new PreferenceRecipe(pRecipeId, food, likeability, gift, chance, component);
 		}
 
@@ -178,7 +178,7 @@ public class PreferenceRecipe implements Recipe<Container> {
 			pBuffer.writeVarInt(pRecipe.likeability);
 			pBuffer.writeItem(pRecipe.giftItem);
 			pBuffer.writeFloat(pRecipe.giftChance);
-			ElementComponent.writeToBuffer(pRecipe.component, pBuffer);
+			ElementStack.writeToBuffer(pRecipe.component, pBuffer);
 		}
 
 	};	

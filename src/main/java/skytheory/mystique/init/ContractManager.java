@@ -22,9 +22,11 @@ public class ContractManager {
 	private static Comparator<Entry<ResourceKey<MystiqueContract>, MystiqueContract>> locationComparator = Comparator.comparing(entry -> entry.getKey());
 
 	static void onAdd(IForgeRegistryInternal<MystiqueContract> owner, RegistryManager stage, int id, ResourceKey<MystiqueContract> key, MystiqueContract obj, @Nullable MystiqueContract oldObj) {
-		LogUtils.getLogger().debug("Registering mystique contract: " + obj.getClass().getCanonicalName() + " -> " + key.location());
+		if (stage == RegistryManager.FROZEN) {
+			LogUtils.getLogger().debug("Registered mystique contract: " + obj.getClass().getCanonicalName() + " -> " + key.location());
+		}
 	}
-	
+
 	static void init(IForgeRegistryInternal<MystiqueContract> owner) {
 		CONTRACTS.clear();
 		owner.getEntries().stream()

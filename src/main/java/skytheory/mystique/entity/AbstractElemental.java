@@ -30,26 +30,24 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraftforge.entity.IEntityAdditionalSpawnData;
-import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.network.NetworkHooks;
 import skytheory.lib.block.DataSync;
 import skytheory.lib.capability.itemhandler.InventoryHandler;
-import skytheory.lib.capability.itemhandler.ItemHandlerListener;
 import skytheory.lib.network.EntityMessage;
 import skytheory.lib.network.SkyTheoryLibNetwork;
 import skytheory.lib.util.ItemHandlerStream;
 import skytheory.lib.util.ItemHandlerStream.ItemHandlerSlot;
 import skytheory.lib.util.ItemHandlerUtils;
-import skytheory.mystique.container.ElementalContainerMenu;
 import skytheory.mystique.entity.ai.ElementalAI;
 import skytheory.mystique.entity.ai.contract.MystiqueContract;
+import skytheory.mystique.gui.ElementalContainerMenu;
 import skytheory.mystique.init.ContractManager;
 import skytheory.mystique.init.MystiqueContracts;
 import skytheory.mystique.init.MystiqueRegistries;
 import skytheory.mystique.recipe.PreferenceRecipe;
 import skytheory.mystique.util.MystiqueDataSerializers;
 
-public class AbstractElemental extends PathfinderMob implements MenuProvider, DataSync, ItemHandlerListener, IEntityAdditionalSpawnData {
+public class AbstractElemental extends PathfinderMob implements MenuProvider, DataSync, IEntityAdditionalSpawnData {
 
 	public static final float HITBOX_WIDTH = 0.5f;
 	public static final float HITBOX_HEIGHT = 1.40625f;
@@ -68,9 +66,9 @@ public class AbstractElemental extends PathfinderMob implements MenuProvider, Da
 	protected AbstractElemental(EntityType<? extends AbstractElemental> p_21368_, Level p_21369_) {
 		super(p_21368_, p_21369_);
 		this.itemHandler = new InventoryHandler(1);
-		this.itemHandler.addListener(this);
+		this.itemHandler.addChangedListener(this::dataSync);
 		this.filters = new InventoryHandler(FILTER_SLOTS);
-		this.filters.addListener(this);
+		this.filters.addChangedListener(this::dataSync);
 		this.interactingPlayer = Optional.empty();
 		this.setPersistenceRequired();
 	}
@@ -305,8 +303,7 @@ public class AbstractElemental extends PathfinderMob implements MenuProvider, Da
 		this.filters.deserializeNBT(tag.getCompound("Filters"));
 	}
 
-	@Override
-	public void onItemHandlerChanged(IItemHandler handler, int slot) {
+	public void dataSync() {
 		if (!this.level.isClientSide()) {
 			SkyTheoryLibNetwork.sendToClient(this, new EntityMessage(this));
 		}

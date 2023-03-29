@@ -1,7 +1,7 @@
 package skytheory.mystique.init;
 
 import net.minecraft.world.inventory.MenuType;
-import skytheory.mystique.container.ElementalContainerMenu;
+import skytheory.mystique.gui.ElementalContainerMenu;
 
 public class MystiqueMenuTypes {
 

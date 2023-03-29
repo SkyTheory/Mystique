@@ -3,20 +3,27 @@ package skytheory.mystique.capability;
 import java.util.Arrays;
 import java.util.List;
 
+import com.google.common.base.Preconditions;
 import com.google.gson.JsonObject;
 
 import net.minecraft.network.FriendlyByteBuf;
 
-public class ElementComponent {
+/**
+ * エネルギー用のパケットとして用いるクラス
+ * 負の値を持つインスタンスは、途中計算用としてのみ用いること
+ * @author SkyTheory
+ *
+ */
+public class ElementStack {
 	
 	protected final int[] cache;
 
-	public ElementComponent() {
+	public ElementStack() {
 		this.cache = new int[ElementQuality.values().length];
 	}
 	
-	public static ElementComponent of(int amount) {
-		ElementComponent component = new ElementComponent();
+	public static ElementStack of(int amount) {
+		ElementStack component = new ElementStack();
 		for (ElementQuality quality : ElementQuality.values()) {
 			component.setAmount(quality, amount);
 		}
@@ -24,6 +31,7 @@ public class ElementComponent {
 	}
 	
 	public void setAmount(ElementQuality quality, int amount) {
+		Preconditions.checkArgument(amount >= 0);
 		cache[quality.ordinal()] = amount;
 	}
 	
@@ -51,27 +59,31 @@ public class ElementComponent {
 		return this.getAmount(quality) >= amount;
 	}
 	
-	public boolean has(ElementComponent component) {
+	public boolean has(ElementStack component) {
 		for (ElementQuality quality : ElementQuality.values()) {
 			if (!has(quality, component.getAmount(quality))) return false;
 		}
 		return true;
 	}
 
+	/**
+	 * 値を持つ属性を返す
+	 * @return
+	 */
 	public List<ElementQuality> getColors(){
 		return Arrays.stream(ElementQuality.values()).filter(q -> this.getAmount(q) > 0).toList();
 	}
 
+	/**
+	 * 量がゼロである属性を返す
+	 * @return
+	 */
 	public List<ElementQuality> getComplementaryColors(){
 		return Arrays.stream(ElementQuality.values()).filter(q -> this.getAmount(q) == 0).toList();
 	}
 
-	public List<ElementQuality> getNegativeColors(){
-		return Arrays.stream(ElementQuality.values()).filter(q -> this.getAmount(q) < 0).toList();
-	}
-
 	public void add(ElementQuality quality, int amount) {
-		cache[quality.ordinal()] += amount;
+		cache[quality.ordinal()]  = Math.min(cache[quality.ordinal()] + amount, 0);
 	}
 
 	public void sub(ElementQuality quality, int amount) {
@@ -82,33 +94,27 @@ public class ElementComponent {
 		this.cache[quality.ordinal()] *= amount;
 	}
 
-	public void add(ElementComponent other) {
+	public void add(ElementStack other) {
 		for (ElementQuality quality : ElementQuality.values()) {
 			add(quality, other.getAmount(quality));
 		}
 	}
 
-	public void sub(ElementComponent other) {
-		ElementComponent inversed = other.copy();
-		inversed.multiply(-1);
-		this.add(inversed);
-	}
-
-	public void multiply(int amount) {
+	public void sub(ElementStack other) {
 		for (ElementQuality quality : ElementQuality.values()) {
-			cache[quality.ordinal()] *= amount;
+			sub(quality, other.getAmount(quality));
 		}
 	}
 
-	public ElementComponent copy() {
-		ElementComponent copy = new ElementComponent();
+	public ElementStack copy() {
+		ElementStack copy = new ElementStack();
 		for (ElementQuality quality : ElementQuality.values()) {
 			copy.setAmount(quality, this.getAmount(quality));
 		}
 		return copy;
 	}
 
-	public boolean isAmountEquals(ElementComponent other) {
+	public boolean isAmountEquals(ElementStack other) {
 		for (ElementQuality quality : ElementQuality.values()) {
 			if (this.getAmount(quality) != other.getAmount(quality)) return false;
 		}
@@ -117,7 +123,7 @@ public class ElementComponent {
 	
 	@Override
 	public boolean equals(Object obj) {
-		if (obj instanceof ElementComponent component && obj.getClass() == this.getClass()) {
+		if (obj instanceof ElementStack component && obj.getClass() == this.getClass()) {
 			return isAmountEquals(component);
 		}
 		return false;
@@ -125,23 +131,24 @@ public class ElementComponent {
 
 	// パケット関連
 	
-	public static ElementComponent readFromBuffer(FriendlyByteBuf pBuffer) {
-		ElementComponent component = new ElementComponent();
+	public static ElementStack readFromBuffer(FriendlyByteBuf pBuffer) {
+		ElementStack component = new ElementStack();
 		for (ElementQuality quality : ElementQuality.values()) {
-			component.setAmount(quality, pBuffer.readInt());
+			int value = pBuffer.readVarInt();
+			component.setAmount(quality, Math.min(value, 0));
 		}
 		return component;
 	}
 
-	public static void writeToBuffer(ElementComponent component, FriendlyByteBuf pBuffer) {
+	public static void writeToBuffer(ElementStack component, FriendlyByteBuf pBuffer) {
 		for (ElementQuality quality : ElementQuality.values()) {
-			pBuffer.writeInt(component.getAmount(quality));
+			pBuffer.writeVarInt(component.getAmount(quality));
 		}
 	}
 	
 	// Jsonコーデック
 	
-	public static void encode(JsonObject jsonObject, ElementComponent component) {
+	public static void encode(JsonObject jsonObject, ElementStack component) {
 		JsonObject element = new JsonObject();
 		for (ElementQuality quality : ElementQuality.values()) {
 			element.addProperty(quality.toString(), component.getAmount(quality));
@@ -149,9 +156,9 @@ public class ElementComponent {
 		jsonObject.add("elements", element);
 	}
 	
-	public static ElementComponent decode(JsonObject jsonObject) {
+	public static ElementStack decode(JsonObject jsonObject) {
 		JsonObject element = jsonObject.getAsJsonObject("elements");
-		ElementComponent component = new ElementComponent();
+		ElementStack component = new ElementStack();
 		for (ElementQuality quality : ElementQuality.values()) {
 			if (element.has(quality.toString())) {
 				component.setAmount(quality, element.get(quality.name()).getAsInt());
@@ -160,6 +167,11 @@ public class ElementComponent {
 		return component;
 	}
 	
+	/**
+	 * ElementStackで用いる属性の列挙
+	 * @author SkyTheory
+	 *
+	 */
 	public static enum ElementQuality {
 
 		LIGHT,

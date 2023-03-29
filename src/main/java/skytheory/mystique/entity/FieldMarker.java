@@ -8,7 +8,6 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.SupportType;
 import net.minecraft.world.phys.AABB;
 import skytheory.lib.util.BlockRotation;
 import skytheory.mystique.init.MystiqueItems;
@@ -26,10 +25,7 @@ public class FieldMarker extends AbstractCoordinatedEntity {
 	public boolean shouldDiscard() {
 		Direction direction = this.getRotation().getFront();
 		BlockPos below = blockPosition().relative(direction);
-		if (!level.getBlockState(below).isFaceSturdy(level, below, direction.getOpposite(), SupportType.CENTER)) {
-			return true;
-		}
-		return false;
+		return level.getBlockState(below).isAir();
 	}
 
 	@Override

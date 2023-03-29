@@ -2,8 +2,6 @@ package skytheory.mystique.blockentity;
 
 import org.jetbrains.annotations.Nullable;
 
-import com.mojang.logging.LogUtils;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -47,22 +45,21 @@ public class ManaInfuserEntity extends BlockEntity implements TickerBlockEntity,
 
 	@Override
 	public void onRightClicked(RightClickBlock event, Player player, InteractionHand hand, @Nullable Direction face, ItemStack stack) {
+		event.setCanceled(true);
+		if (hand != InteractionHand.MAIN_HAND) return;
 		if (ItemHandlerUtils.isEmpty(handler)) {
 			ItemStack handheld = ItemHandlerUtils.takeItemFromPlayer(player, InteractionHand.MAIN_HAND, 64, ItemHandlerMode.SIMULATE);
 			if (!handheld.isEmpty()) {
 				ItemStack remainder = ItemHandlerUtils.insertItem(handler, handheld, ItemHandlerMode.SIMULATE);
 				if (remainder.getCount() != handheld.getCount()) {
-					ItemHandlerUtils.takeItemFromPlayer(player, InteractionHand.MAIN_HAND, handheld.getCount() - remainder.getCount(), ItemHandlerMode.EXECUTE);
-					ItemHandlerUtils.insertItem(handler, handheld, ItemHandlerMode.EXECUTE);
-					LogUtils.getLogger().info(handler.getStackInSlot(0).toString());
-					event.setCanceled(true);
+					ItemStack insert = ItemHandlerUtils.takeItemFromPlayer(player, InteractionHand.MAIN_HAND, handheld.getCount() - remainder.getCount(), ItemHandlerMode.EXECUTE);
+					ItemHandlerUtils.insertItem(handler, insert, ItemHandlerMode.EXECUTE);
 					return;
 				}
 			}
 		} else {
 			ItemStack contents = ItemHandlerUtils.extractItem(handler, 64, ItemHandlerMode.EXECUTE);
 			ItemHandlerUtils.giveItemToPlayerWithDropItem(player, contents);
-			event.setCanceled(true);
 			return;
 		}
 	}

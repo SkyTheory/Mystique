@@ -42,9 +42,7 @@ public class PreferenceProvider implements DataProvider {
 				list.add(DataProvider.saveStable(pOutput, recipe.serializeRecipe(), pathProvider.json(recipe.getId())));
 			}
 		});
-		return CompletableFuture.allOf(list.toArray((i) -> {
-			return new CompletableFuture[i];
-		}));
+		return CompletableFuture.allOf(list.toArray((i) -> new CompletableFuture[i]));
 	}
 
 	protected void addRecipes() {

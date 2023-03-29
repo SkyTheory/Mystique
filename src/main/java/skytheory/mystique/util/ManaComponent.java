@@ -1,7 +1,7 @@
 package skytheory.mystique.util;
 
-import skytheory.mystique.capability.ElementComponent;
-import skytheory.mystique.capability.ElementComponent.ElementQuality;
+import skytheory.mystique.capability.ElementStack;
+import skytheory.mystique.capability.ElementStack.ElementQuality;
 
 public record ManaComponent(ElementQuality... qualities) {
 
@@ -11,8 +11,8 @@ public record ManaComponent(ElementQuality... qualities) {
 	public static final ManaComponent EARTH = new ManaComponent(ElementQuality.DARK, ElementQuality.DEATH);
 	public static final ManaComponent ALL = new ManaComponent(ElementQuality.values());
 
-	public ElementComponent amountOf(int amount) {
-		ElementComponent component = ElementComponent.of(0);
+	public ElementStack amountOf(int amount) {
+		ElementStack component = ElementStack.of(0);
 		for (ElementQuality quality : qualities) {
 			component.setAmount(quality, amount);
 		}

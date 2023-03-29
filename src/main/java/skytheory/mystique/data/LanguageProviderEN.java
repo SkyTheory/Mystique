@@ -60,6 +60,8 @@ public class LanguageProviderEN extends LanguageProvider {
 		add(MystiqueBlocks.ORE_DEEPSLATE_WATER, "Deepslate Water Element Ore");
 		add(MystiqueBlocks.ORE_DEEPSLATE_EARTH, "Deepslate Eatrh Element Ore");
 
+		add(MystiqueBlocks.DEVICE_MANA_CHANNELER, "Mana Channeler");
+		add(MystiqueBlocks.DEVICE_MANA_CONDENSER, "Mana Condenser");
 		add(MystiqueBlocks.DEVICE_MANA_INFUSER, "Mana Infuser");
 		add(MystiqueBlocks.DEVICE_WRITING_TABLE, "Writing Table");
 		add(MystiqueBlocks.DEVICE_WRITING_CHEST, "Writing Chest");

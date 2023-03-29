@@ -6,7 +6,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.IntArrayTag;
 import net.minecraft.util.Mth;
 
-public class ManaHandlerBase extends ElementComponent implements ManaHandler {
+public class ManaHandlerBase extends ElementStack implements ManaHandler {
 
 	private static final int PROTOCOL = 1;
 
@@ -30,8 +30,8 @@ public class ManaHandlerBase extends ElementComponent implements ManaHandler {
 	}
 
 	@Override
-	public ElementComponent insert(ElementComponent component, ManaHandlerMode mode) {
-		ElementComponent result = component.copy();
+	public ElementStack insert(ElementStack component, ManaHandlerMode mode) {
+		ElementStack result = component.copy();
 		for (ElementQuality quality : ElementQuality.values()) {
 			int inserted = Math.min(component.getAmount(quality), getCapacity(quality) - getAmount(quality));
 			result.sub(quality, inserted);
@@ -41,8 +41,8 @@ public class ManaHandlerBase extends ElementComponent implements ManaHandler {
 	}
 
 	@Override
-	public ElementComponent extract(ElementComponent component, ManaHandlerMode mode) {
-		ElementComponent result = new ElementComponent();
+	public ElementStack extract(ElementStack component, ManaHandlerMode mode) {
+		ElementStack result = new ElementStack();
 		for (ElementQuality quality : ElementQuality.values()) {
 			int extracted = Math.min(component.getAmount(quality), getAmount(quality));
 			result.setAmount(quality, extracted);
@@ -52,7 +52,7 @@ public class ManaHandlerBase extends ElementComponent implements ManaHandler {
 	}
 
 	@Override
-	public boolean consume(ElementComponent component, ManaHandlerMode mode) {
+	public boolean consume(ElementStack component, ManaHandlerMode mode) {
 		if (this.has(component)) {
 			extract(component, mode);
 			return true;

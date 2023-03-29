@@ -10,8 +10,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import skytheory.mystique.Mystique;
-import skytheory.mystique.container.ElementalContainerMenu;
 import skytheory.mystique.entity.AbstractElemental;
+import skytheory.mystique.gui.ElementalContainerMenu;
 
 public class ElementalContainerScreen extends AbstractContainerScreen<ElementalContainerMenu> {
 

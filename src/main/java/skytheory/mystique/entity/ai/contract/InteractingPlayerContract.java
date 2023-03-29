@@ -10,9 +10,9 @@ import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.sensing.Sensor;
 import net.minecraft.world.entity.ai.sensing.SensorType;
 import net.minecraft.world.entity.player.Player;
-import skytheory.mystique.container.ElementalContainerMenu;
 import skytheory.mystique.entity.AbstractElemental;
 import skytheory.mystique.entity.ai.behavior.interacting.FollowInteractingPlayer;
+import skytheory.mystique.gui.ElementalContainerMenu;
 
 public class InteractingPlayerContract implements MystiqueContract {
 
