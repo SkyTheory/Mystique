@@ -34,6 +34,7 @@ CREDITS.txt
 LICENSE.txt
 README.txt
 changelog.txt
+gradle/
 gradle.properties
 gradlew
 gradlew.bat
